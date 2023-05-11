@@ -7,13 +7,17 @@ import java.sql.SQLException;
 
 import com.jhcode.spring.domain.User;
 
-public abstract class UserDao {
+public class UserDao {
 	
-	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+	private ConnectionMaker connectionMaker;
 	
+	//생성자
+	public UserDao(ConnectionMaker connectionMaker) {
+		this.connectionMaker = connectionMaker;
+	}
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
-		Connection con = getConnection();
+		Connection con = connectionMaker.makeConnection();
 		
 		//프리페어 스테이트먼츠 사용
 		String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
@@ -30,7 +34,7 @@ public abstract class UserDao {
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
-		Connection con = getConnection();
+		Connection con = connectionMaker.makeConnection();
 		
 		String sql = "SELECT * FROM users WHERE id=?";
 		PreparedStatement pst = con.prepareStatement(sql);
@@ -50,25 +54,4 @@ public abstract class UserDao {
 		return user;
 		
 	}
-	
-	
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		UserDao dao = new NUserDao();
-
-		User user = new User();
-		user.setId("whiteship");
-		user.setName("jhcode");
-		user.setPassword("mariaDB");
-
-		dao.add(user);
-			
-		System.out.println(user.getId() + " 등록 성공");
-		
-		User user2 = dao.get(user.getId());
-		System.out.println(user2.getName());
-		System.out.println(user2.getPassword());
-			
-		System.out.println(user2.getId() + " 조회 성공");
-	}
-	
 }
