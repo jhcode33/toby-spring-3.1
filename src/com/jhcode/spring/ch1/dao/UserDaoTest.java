@@ -2,16 +2,16 @@ package com.jhcode.spring.ch1.dao;
 
 import java.sql.SQLException;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import com.jhcode.spring.ch1.domain.User;
 
 public class UserDaoTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		//==> DaoFactory로 코드 이동
-		//ConnectionMaker connectionMaker = new DConnectionMaker();
-		//UserDao dao = new UserDao(connectionMaker);
 
-		//Factory에서 결정하고 생성한 Dao 객체를 반환받아 사용함.
-		UserDao dao = new DaoFactory().userDao();
+		ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+		UserDao dao = context.getBean("userDao", UserDao.class);
 		
 		User user = new User();
 		user.setId("whiteship");
