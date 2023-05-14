@@ -1,4 +1,4 @@
-package com.jhcode.spring.dao;
+package com.jhcode.spring.ch1.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

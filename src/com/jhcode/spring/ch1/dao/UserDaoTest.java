@@ -1,8 +1,8 @@
-package com.jhcode.spring.dao;
+package com.jhcode.spring.ch1.dao;
 
 import java.sql.SQLException;
 
-import com.jhcode.spring.domain.User;
+import com.jhcode.spring.ch1.domain.User;
 
 public class UserDaoTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {

@@ -1,11 +1,11 @@
-package com.jhcode.spring.dao;
+package com.jhcode.spring.ch1.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.jhcode.spring.domain.User;
+import com.jhcode.spring.ch1.domain.User;
 
 public class UserDao {
 	
