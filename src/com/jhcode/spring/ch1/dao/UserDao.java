@@ -8,34 +8,11 @@ import java.sql.SQLException;
 import com.jhcode.spring.ch1.domain.User;
 
 public class UserDao {
-	
-	
-	//생성자 : 이전 코드
-	//public UserDao(ConnectionMaker connectionMaker) {
-	//	this.connectionMaker = connectionMaker;
-	//}
-	
-	//== 싱글톤 ==//
-	private static UserDao INSTANCE;
-	
+	//이미 스프링 컨테이너가 관리하고 있기 때문에 사용 중에 변경되지 않는 읽기 전용 인스턴스이다.
 	private ConnectionMaker connectionMaker;
-	
-	private UserDao(ConnectionMaker connectionMaker) {
-		this.connectionMaker = connectionMaker;
-	}
-	
-	public static synchronized UserDao getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new UserDao(connectionMaker);
-			return INSTANCE;
-		}
-		return INSTANCE;
-	}
-	
-	
-	
-	
-	
+	//스프링 IoC 컨테이너가 관리하지 않기 때문에 싱글톤으로 유지 되지 않는다. 매번 새로운 값으로 바뀌어 문제가 발생할 수 있다.
+	private Connection con;
+	private User user;
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		Connection con = connectionMaker.makeConnection();
