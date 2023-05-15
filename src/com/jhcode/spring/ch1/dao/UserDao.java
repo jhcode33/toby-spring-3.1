@@ -9,12 +9,33 @@ import com.jhcode.spring.ch1.domain.User;
 
 public class UserDao {
 	
+	
+	//생성자 : 이전 코드
+	//public UserDao(ConnectionMaker connectionMaker) {
+	//	this.connectionMaker = connectionMaker;
+	//}
+	
+	//== 싱글톤 ==//
+	private static UserDao INSTANCE;
+	
 	private ConnectionMaker connectionMaker;
 	
-	//생성자
-	public UserDao(ConnectionMaker connectionMaker) {
+	private UserDao(ConnectionMaker connectionMaker) {
 		this.connectionMaker = connectionMaker;
 	}
+	
+	public static synchronized UserDao getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new UserDao(connectionMaker);
+			return INSTANCE;
+		}
+		return INSTANCE;
+	}
+	
+	
+	
+	
+	
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		Connection con = connectionMaker.makeConnection();
