@@ -8,11 +8,11 @@ import java.sql.SQLException;
 import com.jhcode.spring.ch1.domain.User;
 
 public class UserDao {
-	//이미 스프링 컨테이너가 관리하고 있기 때문에 사용 중에 변경되지 않는 읽기 전용 인스턴스이다.
 	private ConnectionMaker connectionMaker;
-	//스프링 IoC 컨테이너가 관리하지 않기 때문에 싱글톤으로 유지 되지 않는다. 매번 새로운 값으로 바뀌어 문제가 발생할 수 있다.
-	private Connection con;
-	private User user;
+	
+	public UserDao (ConnectionMaker connectionMaker) {
+		this.connectionMaker = connectionMaker;
+	}
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		Connection con = connectionMaker.makeConnection();
