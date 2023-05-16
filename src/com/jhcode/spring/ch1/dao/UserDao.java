@@ -12,10 +12,11 @@ import com.jhcode.spring.ch1.domain.User;
 public class UserDao {
 	private ConnectionMaker connectionMaker;
 	
-	public UserDao (ConnectionMaker connectionMaker) {
+	//== Setter을 사용한 DI ==//
+	public void setConnectionMaker(ConnectionMaker connectionMaker) {
 		this.connectionMaker = connectionMaker;
 	}
-	
+
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		Connection con = connectionMaker.makeConnection();
 		

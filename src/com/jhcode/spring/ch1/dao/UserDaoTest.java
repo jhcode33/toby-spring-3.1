@@ -14,7 +14,7 @@ public class UserDaoTest {
 		UserDao dao = context.getBean("userDao", UserDao.class);
 		
 		User user = new User();
-		user.setId("whiteship");
+		user.setId("setTest");
 		user.setName("jhcode");
 		user.setPassword("mariaDB");
 
