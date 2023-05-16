@@ -10,7 +10,7 @@ import com.jhcode.spring.ch1.domain.User;
 public class UserDao {
 	private ConnectionMaker connectionMaker;
 	
-	public UserDao (ConnectionMaker connectionMaker) {
+	public UserDao () {
 		DaoFactory daoFactory = new DaoFactory();
 		this.connectionMaker = daoFactory.connectionMaker();
 	}
