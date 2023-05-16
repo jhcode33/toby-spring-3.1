@@ -12,9 +12,8 @@ import com.jhcode.spring.ch1.domain.User;
 public class UserDao {
 	private ConnectionMaker connectionMaker;
 	
-	public UserDao () {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-		this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
+	public UserDao (ConnectionMaker connectionMaker) {
+		this.connectionMaker = connectionMaker;
 	}
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
