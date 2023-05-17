@@ -11,12 +11,13 @@ public class DaoFactory {
 		ConnectionMaker connectionMaker = new DConnectionMaker();
 		UserDao userDao = new UserDao();
 		userDao.setConnectionMaker(connectionMaker);
+//<property name="connectionMaker" ref="connectionMaker" />
 		return userDao;
 	}
 	
-	@Bean
-	public ConnectionMaker connectionMaker() {
-		ConnectionMaker connectionMaker = new DConnectionMaker();
+	@Bean															//==> <bean
+	public ConnectionMaker connectionMaker() {						//==> id="connectionMaker"
+		ConnectionMaker connectionMaker = new DConnectionMaker();	//==> com.jhcode.spring.ch1.dao.DConnectionMaker
 		return connectionMaker;
 	}
 }
