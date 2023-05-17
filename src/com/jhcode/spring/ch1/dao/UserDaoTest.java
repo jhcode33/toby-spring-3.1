@@ -15,7 +15,7 @@ public class UserDaoTest {
 		UserDao dao = context.getBean("userDao", UserDao.class);
 		
 		User user = new User();
-		user.setId("xmlTest");
+		user.setId("dataSource");
 		user.setName("jhcode");
 		user.setPassword("mariaDB");
 
