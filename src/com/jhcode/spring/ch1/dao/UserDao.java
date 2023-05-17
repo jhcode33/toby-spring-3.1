@@ -5,20 +5,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import javax.sql.DataSource;
 
 import com.jhcode.spring.ch1.domain.User;
 
 public class UserDao {
-	private ConnectionMaker connectionMaker;
+	//== DataSource 사용하기 ==//
+	private DataSource dataSource;
 	
-	//== Setter을 사용한 DI ==//
-	public void setConnectionMaker(ConnectionMaker connectionMaker) {
-		this.connectionMaker = connectionMaker;
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
-
+	
 	public void add(User user) throws ClassNotFoundException, SQLException{
-		Connection con = connectionMaker.makeConnection();
+		Connection con = dataSource.getConnection();
 		
 		//프리페어 스테이트먼츠 사용
 		String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
@@ -35,7 +35,7 @@ public class UserDao {
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
-		Connection con = connectionMaker.makeConnection();
+		Connection con = dataSource.getConnection();
 		
 		String sql = "SELECT * FROM users WHERE id=?";
 		PreparedStatement pst = con.prepareStatement(sql);
