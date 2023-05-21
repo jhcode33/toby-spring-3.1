@@ -22,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.jhcode.spring.ch2.domain.User;
 
 @ExtendWith(SpringExtension.class) //@RunWith(SpringRunner.class) 와 동일하다
-@ContextConfiguration(locations="/applicationContext.xml")
+@ContextConfiguration(locations="/test-applicationContext.xml")
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserDaoTest {
 	
