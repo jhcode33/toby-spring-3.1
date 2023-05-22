@@ -2,6 +2,7 @@ package com.jhcode.spring.ch2.learningtest.junit;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
@@ -14,8 +15,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.jhcode.spring.ch2.user.dao.UserDao;
+
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "junit.xml")
+@ContextConfiguration(classes = ApplicationContextTest.class)
 public class JUnitTest {
 	
 	@Autowired
