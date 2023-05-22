@@ -1,4 +1,4 @@
-package com.jhcode.spring.ch2.dao;
+package com.jhcode.spring.ch2.user.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import com.jhcode.spring.ch2.domain.User;
+import com.jhcode.spring.ch2.user.domain.User;
 
 
 public class UserDao {

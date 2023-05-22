@@ -1,4 +1,4 @@
-package com.jhcode.spring.ch2.dao;
+package com.jhcode.spring.ch2.user.dao;
 
 import javax.sql.DataSource;
 

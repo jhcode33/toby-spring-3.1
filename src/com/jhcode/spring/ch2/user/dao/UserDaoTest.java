@@ -1,4 +1,4 @@
-package com.jhcode.spring.ch2.dao;
+package com.jhcode.spring.ch2.user.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +14,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import com.jhcode.spring.ch2.domain.User;
+import com.jhcode.spring.ch2.user.domain.User;
 
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserDaoTest {
