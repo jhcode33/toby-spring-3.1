@@ -72,7 +72,8 @@ public class UserDao {
 		try {
 			con = dataSource.getConnection();
 			
-			pst = makeStatement(con);
+			StatementStrategy strategy = new DeleteAllStatement();
+			pst = strategy.makePreparedStatement(con);
 			
 			pst.executeUpdate();
 			
@@ -85,12 +86,12 @@ public class UserDao {
 		}
 	}
 	
-	//== 메소드 추출 리팩토링 적용 ==//
-	private PreparedStatement makeStatement(Connection con) throws SQLException {
-		String sql = "DELETE FROM users";
-		PreparedStatement pst = con.prepareStatement(sql);
-		return pst;
-	}
+//	//== 메소드 추출 리팩토링 적용 ==//
+//	private PreparedStatement makeStatement(Connection con) throws SQLException {
+//		String sql = "DELETE FROM users";
+//		PreparedStatement pst = con.prepareStatement(sql);
+//		return pst;
+//	}
 	
 	//== 테이블 정보 개수 조회 ==//
 	public int getCount() throws SQLException {
