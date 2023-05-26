@@ -21,6 +21,26 @@ public class UserDao {
 		this.dataSource = dataSource;
 	}
 	
+	public void jdbcContextWithStatementsStrategy(StatementStrategy stmt) throws SQLException{
+		Connection con = null;
+		PreparedStatement pst = null;
+		
+		try {
+			con = dataSource.getConnection();
+			
+			pst = stmt.makePreparedStatement(con);
+			
+			pst.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw e;
+			
+		} finally {
+			if (pst != null) { try {pst.close(); } catch (SQLException e) {} }
+			if (con != null) { try {con.close(); } catch (SQLException e) {} }
+		}
+	}
+	
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		Connection con = dataSource.getConnection();
 		
@@ -66,24 +86,8 @@ public class UserDao {
 	
 	//== 테이블 정보 삭제 ==//
 	public void deleteAll() throws SQLException {
-		Connection con = null;
-		PreparedStatement pst = null;
-		
-		try {
-			con = dataSource.getConnection();
-			
-			StatementStrategy strategy = new DeleteAllStatement();
-			pst = strategy.makePreparedStatement(con);
-			
-			pst.executeUpdate();
-			
-		} catch (SQLException e) {
-			throw e;
-			
-		} finally {
-			if (pst != null) { try {pst.close(); } catch (SQLException e) {} }
-			if (con != null) { try {con.close(); } catch (SQLException e) {} }
-		}
+		StatementStrategy st = new DeleteAllStatement();
+		jdbcContextWithStatementsStrategy(st);
 	}
 	
 //	//== 메소드 추출 리팩토링 적용 ==//
