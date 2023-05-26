@@ -72,8 +72,8 @@ public class UserDao {
 		try {
 			con = dataSource.getConnection();
 			
-			String sql = "DELETE FROM users";
-			pst = con.prepareStatement(sql);
+			pst = makeStatement(con);
+			
 			pst.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -83,6 +83,13 @@ public class UserDao {
 			if (pst != null) { try {pst.close(); } catch (SQLException e) {} }
 			if (con != null) { try {con.close(); } catch (SQLException e) {} }
 		}
+	}
+	
+	//== 메소드 추출 리팩토링 적용 ==//
+	private PreparedStatement makeStatement(Connection con) throws SQLException {
+		String sql = "DELETE FROM users";
+		PreparedStatement pst = con.prepareStatement(sql);
+		return pst;
 	}
 	
 	//== 테이블 정보 개수 조회 ==//
