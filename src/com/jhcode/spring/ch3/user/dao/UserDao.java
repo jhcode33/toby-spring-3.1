@@ -14,6 +14,7 @@ import com.jhcode.spring.ch3.user.domain.User;
 
 
 public class UserDao {
+	
 	//== DataSource 사용하기 ==//
 	private DataSource dataSource;
 	
@@ -41,10 +42,26 @@ public class UserDao {
 		}
 	}
 	
-	public void add(User user) throws ClassNotFoundException, SQLException{
-		StatementStrategy st = new AddStatement(user);
+	public void add(final User user) throws ClassNotFoundException, SQLException{
+		class AddStatementLocalClass implements StatementStrategy {
+			
+			@Override
+			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
+
+				String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
+				PreparedStatement pst = con.prepareStatement(sql);
+				pst.setString(1, user.getId());
+				pst.setString(2, user.getName());
+				pst.setString(3, user.getPassword());
+				
+				return pst;
+			}
+		}//내부 클래스의 끝
+		
+		StatementStrategy st = new AddStatementLocalClass();
 		jdbcContextWithStatementsStrategy(st);
-	}
+	
+	}//외부 클래스의 끝
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
 		Connection con = dataSource.getConnection();
