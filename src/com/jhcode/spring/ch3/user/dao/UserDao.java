@@ -43,24 +43,22 @@ public class UserDao {
 	}
 	
 	public void add(final User user) throws ClassNotFoundException, SQLException{
-		class AddStatementLocalClass implements StatementStrategy {
+		 
+		jdbcContextWithStatementsStrategy(new StatementStrategy() {
 			
-			@Override
-			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
-
-				String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
-				PreparedStatement pst = con.prepareStatement(sql);
-				pst.setString(1, user.getId());
-				pst.setString(2, user.getName());
-				pst.setString(3, user.getPassword());
-				
-				return pst;
-			}
-		}//내부 클래스의 끝
-		
-		StatementStrategy st = new AddStatementLocalClass();
-		jdbcContextWithStatementsStrategy(st);
-	
+				public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
+					String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
+					
+					PreparedStatement pst = con.prepareStatement(sql);
+					pst.setString(1, user.getId());
+					pst.setString(2, user.getName());
+					pst.setString(3, user.getPassword());
+					
+					return pst;
+					
+				}
+			}//익명 내부 클래스의 끝);
+		);//jdbcContextWithStatementsStrategy() 메소드의 끝
 	}//외부 클래스의 끝
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
@@ -91,8 +89,14 @@ public class UserDao {
 	
 	//== 테이블 정보 삭제 ==//
 	public void deleteAll() throws SQLException {
-		StatementStrategy st = new DeleteAllStatement();
-		jdbcContextWithStatementsStrategy(st);
+		jdbcContextWithStatementsStrategy(new StatementStrategy() {
+			
+			@Override
+			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
+				String sql = "DELETE FROM users";
+				return con.prepareStatement(sql);
+			}
+		});
 	}
 	
 	//== 테이블 정보 개수 조회 ==//
