@@ -42,20 +42,8 @@ public class UserDao {
 	}
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
-		Connection con = dataSource.getConnection();
-		
-		//프리페어 스테이트먼츠 사용
-		String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
-		PreparedStatement pst = con.prepareStatement(sql);
-		pst.setString(1, user.getId());
-		pst.setString(2, user.getName());
-		pst.setString(3, user.getPassword());
-		
-		pst.executeUpdate();
-		
-		pst.close();
-		con.close();
-		
+		StatementStrategy st = new AddStatement(user);
+		jdbcContextWithStatementsStrategy(st);
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
@@ -89,13 +77,6 @@ public class UserDao {
 		StatementStrategy st = new DeleteAllStatement();
 		jdbcContextWithStatementsStrategy(st);
 	}
-	
-//	//== 메소드 추출 리팩토링 적용 ==//
-//	private PreparedStatement makeStatement(Connection con) throws SQLException {
-//		String sql = "DELETE FROM users";
-//		PreparedStatement pst = con.prepareStatement(sql);
-//		return pst;
-//	}
 	
 	//== 테이블 정보 개수 조회 ==//
 	public int getCount() throws SQLException {
