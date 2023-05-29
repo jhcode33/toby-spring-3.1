@@ -9,17 +9,24 @@ import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.jhcode.spring.ch3.user.domain.User;
 
 
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
 	
+	@Autowired
 	private UserDao dao;
 	
 	@BeforeEach
@@ -34,6 +41,13 @@ public class UserDaoTest {
 					        		true);
         dao = new UserDao();
         dao.setDataSource(dataSource);
+        
+        
+        JdbcContext jdbcContext = new JdbcContext();
+        jdbcContext.setDataSource(dataSource);
+        dao.setJdbcContext(jdbcContext);
+        
+        
     }
 	
 	@Test

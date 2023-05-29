@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.jhcode.spring.ch3.user.domain.User;
@@ -15,36 +16,24 @@ import com.jhcode.spring.ch3.user.domain.User;
 
 public class UserDao {
 	
-	//== DataSource 사용하기 ==//
 	private DataSource dataSource;
+	private JdbcContext jdbcContext;
 	
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+		
+		this.jdbcContext = new JdbcContext();
+		
+		jdbcContext.setDataSource(dataSource);
 	}
 	
-	public void jdbcContextWithStatementsStrategy(StatementStrategy stmt) throws SQLException{
-		Connection con = null;
-		PreparedStatement pst = null;
-		
-		try {
-			con = dataSource.getConnection();
-			
-			pst = stmt.makePreparedStatement(con);
-			
-			pst.executeUpdate();
-			
-		} catch (SQLException e) {
-			throw e;
-			
-		} finally {
-			if (pst != null) { try {pst.close(); } catch (SQLException e) {} }
-			if (con != null) { try {con.close(); } catch (SQLException e) {} }
-		}
+	public void setJdbcContext(JdbcContext jdbcContext) {
+		this.jdbcContext = jdbcContext;
 	}
 	
 	public void add(final User user) throws ClassNotFoundException, SQLException{
 		 
-		jdbcContextWithStatementsStrategy(new StatementStrategy() {
+		jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 			
 				public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
 					String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
@@ -58,7 +47,7 @@ public class UserDao {
 					
 				}
 			}//익명 내부 클래스의 끝);
-		);//jdbcContextWithStatementsStrategy() 메소드의 끝
+		);//jdbcContext.workWithStatementStrategy() 메소드의 끝
 	}//외부 클래스의 끝
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
@@ -89,7 +78,7 @@ public class UserDao {
 	
 	//== 테이블 정보 삭제 ==//
 	public void deleteAll() throws SQLException {
-		jdbcContextWithStatementsStrategy(new StatementStrategy() {
+		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 			
 			@Override
 			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
