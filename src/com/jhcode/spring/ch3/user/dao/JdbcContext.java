@@ -16,13 +16,17 @@ public class JdbcContext {
 		this.dataSource = dataSource;
 	}
 	
+	//== 템플릿 메소드 ==//
+	//인터페이스 타입으로 익명 내부 클래스를 구현한 객체를 매개변수로 받는다.
 	public void workWithStatementStrategy(StatementStrategy stmt) throws SQLException {
 		Connection con = null;
 		PreparedStatement pst = null;
 		
 		try {
+			//참조 정보 생성
 			con = dataSource.getConnection();
 			
+			//콜백 메소드 호출하고 파라미터로 참조 정보 전달, 결과값을 pst에 대입
 			pst = stmt.makePreparedStatement(con);
 			
 			pst.executeUpdate();

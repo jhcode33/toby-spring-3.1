@@ -33,8 +33,10 @@ public class UserDao {
 	
 	public void add(final User user) throws ClassNotFoundException, SQLException{
 		 
+		//== 템플릿 메소드 ==//
 		jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-			
+				
+				//== 익명 콜백 객체, 하나의 메소드를 가진 인터페이스를 구현한 익명 내부 클래스 ==//
 				public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
 					String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
 					
@@ -76,17 +78,23 @@ public class UserDao {
 		
 	}
 	
-	//== 테이블 정보 삭제 ==//
+	
 	public void deleteAll() throws SQLException {
+		String sql = "DELETE FROM users";
+		executeSql(sql);
+	}
+	
+	private void executeSql(final String query) throws SQLException {
 		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 			
 			@Override
 			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
-				String sql = "DELETE FROM users";
-				return con.prepareStatement(sql);
+				return con.prepareStatement(query);
 			}
 		});
 	}
+	
+
 	
 	//== 테이블 정보 개수 조회 ==//
 	public int getCount() throws SQLException {
