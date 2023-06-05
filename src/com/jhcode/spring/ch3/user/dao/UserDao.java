@@ -81,18 +81,19 @@ public class UserDao {
 	
 	public void deleteAll() throws SQLException {
 		String sql = "DELETE FROM users";
-		executeSql(sql);
+		this.jdbcContext.executeSql(sql);
 	}
 	
-	private void executeSql(final String query) throws SQLException {
-		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-			
-			@Override
-			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
-				return con.prepareStatement(query);
-			}
-		});
-	}
+	//JdbcContext로 이동함.
+//	private void executeSql(final String query) throws SQLException {
+//		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
+//			
+//			@Override
+//			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
+//				return con.prepareStatement(query);
+//			}
+//		});
+//	}
 	
 
 	
