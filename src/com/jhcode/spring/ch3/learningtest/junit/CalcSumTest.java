@@ -1,4 +1,4 @@
-package com.jhcode.spring.ch3.learningtest.template;
+package com.jhcode.spring.ch3.learningtest.junit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.jhcode.spring.ch3.learningtest.template.Calculator;
 
 public class CalcSumTest {
 	
@@ -28,5 +30,10 @@ public class CalcSumTest {
 	@Test
 	public void multiplyOfNumbers() throws IOException {
 		assertEquals(24, calculator.calcMultiply(numFilepath));
+	}
+	
+	@Test
+	public void concatenate() throws IOException {
+		assertEquals("1234", calculator.concatenate(numFilepath));
 	}
 }

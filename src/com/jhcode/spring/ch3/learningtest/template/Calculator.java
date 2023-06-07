@@ -4,57 +4,67 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.jhcode.spring.ch3.user.dao.LineCallback;
+
 public class Calculator {
 	
 	public Integer calcSum(String filepath) throws IOException {
 		
 		//콜백 오브젝트, 익명 내부 클래스이다.
-		BufferedReaderCallback sumCallback = new BufferedReaderCallback() {
+		LineCallback<Integer> sumCallback = new LineCallback<Integer>() {
 			
-			//변경되는 부분, doSomethingWithReader을 오버라이드하여 재정의하여 콜백 동작을 수행한다.
-			public Integer doSomethingWithReader(BufferedReader br) throws IOException{
-				
-				Integer sum = 0;
-				String line = null;
-				while((line = br.readLine()) != null) {
-					sum += Integer.valueOf(line);
-				}
-				
-				return sum;
+			//콜백 메소드는 오직 파일의 읽은 한 줄의 값을 가져와서 더하는 작업만 실시한다.
+			@Override
+			public Integer doSomethingWithLine(String line, Integer value) {
+				return value + Integer.valueOf(line);
 			}
 		};
-		return fileReadTemplate(filepath, sumCallback);
+		return lineReadTemplate(filepath, sumCallback, 0);
 	}
 	
 	
 	public Integer calcMultiply(String filePath) throws IOException {
 		
 		//콜백 오브젝트
-		BufferedReaderCallback multiplyCallback = new BufferedReaderCallback() {
-			
-			public Integer doSomethingWithReader(BufferedReader br) throws IOException {
-				Integer multiply = 1;
-				String line = null;
-				while((line = br.readLine()) != null) {
-					multiply *= Integer.valueOf(line);
-				}
-				return multiply;
+		LineCallback<Integer> multiplyCallback = new LineCallback<Integer>() {
+			public Integer doSomethingWithLine(String line, Integer value) {
+				return value * Integer.valueOf(line);
 			}
 		};
-		return fileReadTemplate(filePath, multiplyCallback);
+		return lineReadTemplate(filePath, multiplyCallback, 1);
+	}
+	
+	//== 제네릭을 사용하여 String으로 처리 ==//
+	public String concatenate(String filepath) throws IOException {
+		
+		LineCallback<String> concatenateCallback = new LineCallback<String>() {
+			
+			public String doSomethingWithLine(String line, String value) {
+				return value + line;
+			}
+		};
+		return lineReadTemplate(filepath, concatenateCallback, "");
 	}
 	
 	
 	
 	//템플릿, -> 변경되지 않는 부분
-	public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException{
+	public <T> T lineReadTemplate(String filepath, LineCallback<T> callback, T initVal) throws IOException{
 		
 		BufferedReader br = null;
 		
 		try {
 			br = new BufferedReader(new FileReader(filepath));
-			int ret = callback.doSomethingWithReader(br);
-			return ret;
+			
+			//콜백 메소드를 통해 받환된 결과를 담을 변수
+			T res = initVal;
+			String line = null;
+			
+			//각 라인의 내용을 계산하는 작업만 콜백에게 전담한다
+			while((line = br.readLine()) != null) {
+				res = callback.doSomethingWithLine(line, res);
+			}
+			return res;
 			
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
