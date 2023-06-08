@@ -7,50 +7,27 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.jhcode.spring.ch3.user.domain.User;
-
-
 
 public class UserDao {
 	
 	private DataSource dataSource;
-	private JdbcContext jdbcContext;
+	private JdbcTemplate jdbcTemplate;
 	
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
-		
-		this.jdbcContext = new JdbcContext();
-		
-		jdbcContext.setDataSource(dataSource);
-	}
-	
-	public void setJdbcContext(JdbcContext jdbcContext) {
-		this.jdbcContext = jdbcContext;
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
 	public void add(final User user) throws ClassNotFoundException, SQLException{
-		 
-		//== 템플릿 메소드 ==//
-		jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-				
-				//== 익명 콜백 객체, 하나의 메소드를 가진 인터페이스를 구현한 익명 내부 클래스 ==//
-				public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
-					String sql = "INSERT INTO users(id, name, password) values(?,?,?)";
-					
-					PreparedStatement pst = con.prepareStatement(sql);
-					pst.setString(1, user.getId());
-					pst.setString(2, user.getName());
-					pst.setString(3, user.getPassword());
-					
-					return pst;
-					
-				}
-			}//익명 내부 클래스의 끝);
-		);//jdbcContext.workWithStatementStrategy() 메소드의 끝
-	}//외부 클래스의 끝
+		String sql = "INSERT INTO users(id, name, password) values(?,?,?)"; 
+		this.jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
+	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
 		Connection con = dataSource.getConnection();
@@ -81,7 +58,8 @@ public class UserDao {
 	
 	public void deleteAll() throws SQLException {
 		String sql = "DELETE FROM users";
-		this.jdbcContext.executeSql(sql);
+		//콜백 객체 생성을 내장 함수가 담당한다.
+		this.jdbcTemplate.update(sql);
 	}
 	
 	//JdbcContext로 이동함.
@@ -99,27 +77,21 @@ public class UserDao {
 	
 	//== 테이블 정보 개수 조회 ==//
 	public int getCount() throws SQLException {
-		Connection con = null;
-		PreparedStatement pst = null;
-		ResultSet rs = null;
+		String sql = "SELECT COUNT(*) FROM users";
 		
-		try {
-			con = dataSource.getConnection();
+		return this.jdbcTemplate.query(
+	      //첫 번째 콜백 객체	
+		  new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException{
+				return con.prepareStatement(sql);
+			}
 			
-			String sql = "SELECT COUNT(*) FROM users";
-			pst = con.prepareStatement(sql);
-			
-			rs = pst.executeQuery();
-			rs.next();
-			return rs.getInt(1);
-			
-		} catch (Exception e) {
-			throw e;
-			
-		} finally {
-			if (rs  != null) { try {rs.close();  } catch (SQLException e) {} }
-			if (pst != null) { try {pst.close(); } catch (SQLException e) {} }
-			if (con != null) { try {con.close(); } catch (SQLException e) {} }
-		}
+			//두 번째 콜백 객체
+		}, new ResultSetExtractor<Integer>() {
+			public Integer extractData(ResultSet rs) throws SQLException{
+				rs.next();
+				return rs.getInt(1);
+			}
+		});
 	}
 }

@@ -41,13 +41,6 @@ public class UserDaoTest {
 					        		true);
         dao = new UserDao();
         dao.setDataSource(dataSource);
-        
-        
-        JdbcContext jdbcContext = new JdbcContext();
-        jdbcContext.setDataSource(dataSource);
-        dao.setJdbcContext(jdbcContext);
-        
-        
     }
 	
 	@Test
