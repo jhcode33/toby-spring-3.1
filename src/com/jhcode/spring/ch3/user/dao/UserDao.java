@@ -1,16 +1,17 @@
 package com.jhcode.spring.ch3.user.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.jhcode.spring.ch3.user.domain.User;
 
@@ -29,32 +30,27 @@ public class UserDao {
 		this.jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
 	}
 	
-	public User get(String id) throws ClassNotFoundException, SQLException {
-		Connection con = dataSource.getConnection();
-		
-		String sql = "SELECT * FROM users WHERE id=?";
-		PreparedStatement pst = con.prepareStatement(sql);
-		pst.setString(1, id);
-		
-		ResultSet rs = pst.executeQuery();
-		User user = null;
-		if (rs.next()) {
-			user = new User();
-			user.setId(rs.getString("id"));
-			user.setName(rs.getString("name"));
-			user.setPassword(rs.getString("password"));
-		}
-		
-		if(user == null) throw new EmptyResultDataAccessException(1);
-		
-		rs.close();
-		pst.close();
-		con.close();
-		
-		return user;
-		
-	}
+	//==RowMapper 객체를 생성하기 위한 메소드==//
+	private RowMapper<User> userRowMapper() {
+        return ((rs, rowNum) -> {
+        	User user = new User();
+        	user.setId(rs.getString("id"));
+        	user.setName(rs.getString("name"));
+        	user.setPassword(rs.getString("password"));            
+            return user;
+        });
+    }
 	
+	public Optional<User> get(String id) throws SQLException {
+		String sql = "SELECT * FROM users WHERE id = ?";	    		
+	    
+	    try (Stream<User> stream = jdbcTemplate.queryForStream(sql, userRowMapper(), id)) {
+	        return stream.findFirst();
+	    } catch (DataAccessException e) {
+	        return Optional.empty();
+	    }
+	}
+
 	public void deleteAll() throws SQLException {
 		String sql = "DELETE FROM users";
 		//콜백 객체 생성을 내장 함수가 담당한다.
@@ -69,5 +65,12 @@ public class UserDao {
 				(rs, rowNum) -> rs.getInt(1));
 		
 		return (int)DataAccessUtils.singleResult(result);
+	}
+	
+	//== 테이블에 있는 전체 User 정보 가져오기
+	public List<User> getAll() throws DataAccessException, SQLException {
+		String sql = "SELECT * FROM users ORDER BY id DESC";
+		
+		return this.jdbcTemplate.query(sql, userRowMapper());
 	}
 }

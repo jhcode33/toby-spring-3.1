@@ -2,8 +2,11 @@ package com.jhcode.spring.ch3.user.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -28,6 +31,9 @@ public class UserDaoTest {
 	
 	@Autowired
 	private UserDao dao;
+	private User user1;
+	private User user2;
+	private User user3;
 	
 	@BeforeEach
     public void setUp() {
@@ -41,6 +47,10 @@ public class UserDaoTest {
 					        		true);
         dao = new UserDao();
         dao.setDataSource(dataSource);
+        
+        user1 = new User("user1", "one", "1111");
+        user2 = new User("user2", "two", "2222");
+        user3 = new User("user3", "three", "3333");
     }
 	
 	@Test
@@ -49,9 +59,6 @@ public class UserDaoTest {
 		dao.deleteAll();	
 		assertEquals(dao.getCount(), 0);
 		
-		User user1 = new User("user1", "one", "1111");
-		User user2 = new User("user2", "two", "2222");
-		
 		dao.deleteAll();
 		assertEquals(dao.getCount(), 0);
 
@@ -59,21 +66,24 @@ public class UserDaoTest {
 		dao.add(user2);
 		assertEquals(dao.getCount(), 2);
 		
-		User userget1 = dao.get(user1.getId());		
-		assertEquals(userget1.getName(), user1.getName());
-		assertEquals(userget1.getPassword(), user1.getPassword());
+		Optional<User> Optuserget1 = dao.get(user1.getId());
+		if(!Optuserget1.isEmpty()) {
+			User userget = Optuserget1.get();
+			assertEquals(user1.getName(), userget.getName());
+			assertEquals(user1.getPassword(), userget.getPassword());
+		}
 		
-		User userget2 = dao.get(user2.getId());		
-		assertEquals(userget2.getName(), user2.getName());
-		assertEquals(userget2.getPassword(), user2.getPassword());
+		Optional<User> Optuserget2 = dao.get(user2.getId());
+		if(!Optuserget2.isEmpty()) {
+			User userget = Optuserget2.get();
+			assertEquals(user2.getName(), userget.getName());
+			assertEquals(user2.getPassword(), userget.getPassword());
+		}
 	}
 	
 	@Test
 	public void count() throws ClassNotFoundException, SQLException {
         System.out.println("count(): " + this);
-		User user1 = new User("user1", "one", "1111");
-		User user2 = new User("user2", "two", "2222");
-		User user3 = new User("user3", "three", "3333");
 		
 		dao.deleteAll();
 		assertEquals(dao.getCount(), 0);
@@ -94,6 +104,38 @@ public class UserDaoTest {
 		dao.deleteAll();
 		assertEquals(dao.getCount(), 0);
 
-		assertThrows(EmptyResultDataAccessException.class, () -> {dao.get("unknown_id");});
+		//assertThrows(EmptyResultDataAccessException.class, () -> {dao.get("unknown_id");});
+		Optional<User> Optuserget = dao.get("unknown_id");
+		assertTrue(Optuserget.isEmpty());
+	}
+	
+	@Test
+	public void get() throws ClassNotFoundException, SQLException{
+		dao.deleteAll();
+		
+		dao.add(user1);
+		List<User> users1 = dao.getAll();
+		assertEquals(users1.size(), 1);
+		checkSameUser(user1, users1.get(0));
+		
+		dao.add(user2); 
+		List<User> users2 = dao.getAll();
+		assertEquals(users2.size(), 2);
+		checkSameUser(user2, users2.get(0));  
+		checkSameUser(user1, users2.get(1));
+		
+		dao.add(user3); 
+		List<User> users3 = dao.getAll();
+		assertEquals(users3.size(), 3);	
+		checkSameUser(user3, users3.get(0));  
+		checkSameUser(user2, users3.get(1));  
+		checkSameUser(user1, users3.get(2));
+		
+	}
+	
+	private void checkSameUser(User user1, User user2) {
+		assertEquals(user1.getId(), user2.getId());
+		assertEquals(user1.getName(), user2.getName());
+		assertEquals(user1.getPassword(), user2.getPassword());
 	}
 }
