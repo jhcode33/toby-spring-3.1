@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.jhcode.spring.ch3.user.domain.User;
 
@@ -55,43 +55,19 @@ public class UserDao {
 		
 	}
 	
-	
 	public void deleteAll() throws SQLException {
 		String sql = "DELETE FROM users";
 		//콜백 객체 생성을 내장 함수가 담당한다.
 		this.jdbcTemplate.update(sql);
 	}
 	
-	//JdbcContext로 이동함.
-//	private void executeSql(final String query) throws SQLException {
-//		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-//			
-//			@Override
-//			public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
-//				return con.prepareStatement(query);
-//			}
-//		});
-//	}
-	
-
-	
 	//== 테이블 정보 개수 조회 ==//
 	public int getCount() throws SQLException {
 		String sql = "SELECT COUNT(*) FROM users";
 		
-		return this.jdbcTemplate.query(
-	      //첫 번째 콜백 객체	
-		  new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection con) throws SQLException{
-				return con.prepareStatement(sql);
-			}
-			
-			//두 번째 콜백 객체
-		}, new ResultSetExtractor<Integer>() {
-			public Integer extractData(ResultSet rs) throws SQLException{
-				rs.next();
-				return rs.getInt(1);
-			}
-		});
+		List<Integer> result = jdbcTemplate.query(sql,
+				(rs, rowNum) -> rs.getInt(1));
+		
+		return (int)DataAccessUtils.singleResult(result);
 	}
 }
