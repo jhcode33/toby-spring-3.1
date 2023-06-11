@@ -1,6 +1,5 @@
 package com.jhcode.spring.ch3.user.dao;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -17,17 +16,10 @@ import com.jhcode.spring.ch3.user.domain.User;
 
 public class UserDao {
 	
-	private DataSource dataSource;
 	private JdbcTemplate jdbcTemplate;
 	
 	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-	
-	public void add(final User user) throws ClassNotFoundException, SQLException{
-		String sql = "INSERT INTO users(id, name, password) values(?,?,?)"; 
-		this.jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
 	}
 	
 	//==RowMapper 객체를 생성하기 위한 메소드==//
@@ -40,7 +32,14 @@ public class UserDao {
             return user;
         });
     }
+		
+	//== DB에 user 추가 ==//
+	public void add(final User user) throws ClassNotFoundException, SQLException{
+		String sql = "INSERT INTO users(id, name, password) values(?,?,?)"; 
+		this.jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
+	}
 	
+	//== DB에서 id에 해당하는 user 정보 검색 ==//
 	public Optional<User> get(String id) throws SQLException {
 		String sql = "SELECT * FROM users WHERE id = ?";	    		
 	    
@@ -51,6 +50,7 @@ public class UserDao {
 	    }
 	}
 
+	//== 테이블 전체 데이터 삭제 ==//
 	public void deleteAll() throws SQLException {
 		String sql = "DELETE FROM users";
 		//콜백 객체 생성을 내장 함수가 담당한다.

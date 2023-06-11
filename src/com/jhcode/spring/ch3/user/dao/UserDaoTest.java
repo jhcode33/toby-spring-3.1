@@ -110,9 +110,10 @@ public class UserDaoTest {
 	}
 	
 	@Test
-	public void get() throws ClassNotFoundException, SQLException{
+	public void getAll() throws ClassNotFoundException, SQLException{
 		dao.deleteAll();
 		
+		//== 네거티브 테스트, DB에 데이터가 하나도 없을 경우 ==//
 		dao.add(user1);
 		List<User> users1 = dao.getAll();
 		assertEquals(users1.size(), 1);
