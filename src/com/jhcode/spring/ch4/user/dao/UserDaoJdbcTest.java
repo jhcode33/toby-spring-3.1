@@ -13,7 +13,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,6 +32,10 @@ public class UserDaoJdbcTest {
 	
 	@Autowired
 	private UserDaoJdbc dao;
+	
+	@Autowired 
+	private DataSource dataSource;
+	
 	private User user1;
 	private User user2;
 	private User user3;
@@ -136,4 +144,26 @@ public class UserDaoJdbcTest {
 		assertEquals(user1.getName(), user2.getName());
 		assertEquals(user1.getPassword(), user2.getPassword());
 	}
+	
+	@Test
+	public void sqlExceptionTranslate() {
+	    // 데이터베이스의 모든 데이터 삭제
+	    dao.deleteAll();
+
+	    try {
+	        // 동일한 사용자(user1)를 두 번 추가하여 중복 키 예외 발생
+	        dao.add(user1);
+	        dao.add(user1);
+	    } catch (DuplicateKeyException ex) {
+	        // DuplicateKeyException의 원인인 SQLException 객체를 가져옴
+	        SQLException sqlEx = (SQLException) ex.getCause();
+	        
+	        // SQLErrorCodeSQLExceptionTranslator를 사용하여 SQLException 번역
+	        SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+	        DataAccessException transEx = set.translate(null, null, sqlEx);
+
+	        // 번역된 예외의 클래스가 DuplicateKeyException인지 확인
+	        assertEquals(DuplicateKeyException.class, transEx.getClass());
+	    }
+	}	
 }
