@@ -34,13 +34,13 @@ public class UserDao {
     }
 		
 	//== DB에 user 추가 ==//
-	public void add(final User user) throws ClassNotFoundException, SQLException{
+	public void add(final User user) throws DuplicateUserIdException {
 		String sql = "INSERT INTO users(id, name, password) values(?,?,?)"; 
 		this.jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
 	}
 	
 	//== DB에서 id에 해당하는 user 정보 검색 ==//
-	public Optional<User> get(String id) throws SQLException {
+	public Optional<User> get(String id) {
 		String sql = "SELECT * FROM users WHERE id = ?";	    		
 	    
 	    try (Stream<User> stream = jdbcTemplate.queryForStream(sql, userRowMapper(), id)) {
@@ -58,7 +58,7 @@ public class UserDao {
 	}
 	
 	//== 테이블 정보 개수 조회 ==//
-	public int getCount() throws SQLException {
+	public int getCount(){
 		String sql = "SELECT COUNT(*) FROM users";
 		
 		List<Integer> result = jdbcTemplate.query(sql,
