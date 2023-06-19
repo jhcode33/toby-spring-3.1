@@ -1,7 +1,6 @@
 package com.jhcode.spring.ch4.user.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
@@ -14,23 +13,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.jhcode.spring.ch3.user.domain.User;
-
+import com.jhcode.spring.ch4.user.domain.User;
 
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
-public class UserDaoTest {
+public class UserDaoJdbcTest {
 	
 	@Autowired
-	private UserDao dao;
+	private UserDaoJdbc dao;
 	private User user1;
 	private User user2;
 	private User user3;
@@ -45,7 +42,7 @@ public class UserDaoTest {
 					        		"root",
 					        		"1234",
 					        		true);
-        dao = new UserDao();
+        dao = new UserDaoJdbc();
         dao.setDataSource(dataSource);
         
         user1 = new User("user1", "one", "1111");
