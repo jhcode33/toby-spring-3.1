@@ -157,5 +157,34 @@ public class UserDaoTest {
 	        // 번역된 예외의 클래스가 DuplicateKeyException인지 확인
 	        assertEquals(DuplicateKeyException.class, transEx.getClass());
 	    }
-	}	
+	}
+	
+	@Test
+	public void update() {
+		dao.deleteAll();
+		
+		dao.add(user1); //수정할 사용자
+		dao.add(user2); //수정하지 않을 사용자
+		
+		user1.setName("jhcode33");
+		user1.setPassword("password");
+		user1.setLevel(Level.SILVER);
+		user1.setLogin(1000);
+		user1.setRecommend(999);
+		dao.update(user1);
+		
+		Optional<User> Optuser1Update = dao.get(user1.getId());
+		
+		if(Optuser1Update != null) {
+			User user1Update = Optuser1Update.get();
+			checkSameUser(user1, user1Update);
+		}
+		
+		Optional<User> Optuser2Update = dao.get(user2.getId());
+		
+		if(Optuser2Update != null) {
+			User user2Update = Optuser2Update.get();
+			checkSameUser(user2, user2Update);
+		}
+	}
 }

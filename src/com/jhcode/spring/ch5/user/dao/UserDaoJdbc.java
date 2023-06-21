@@ -53,7 +53,7 @@ public class UserDaoJdbc implements UserDao {
         });
     }
 		
-	//== DB에 user 추가 ==//
+	//== DB에 사용자 추가 ==//
 	public void add(final User user) {
 		String sql = "INSERT INTO users(id, name, password, level, login, recommend) " +
 					 "VALUES(?,?,?,?,?,?)"; 
@@ -65,7 +65,7 @@ public class UserDaoJdbc implements UserDao {
 									  user.getRecommend());
 	}
 	
-	//== DB에서 id에 해당하는 user 정보 검색 ==//
+	//== DB에서 id에 해당하는 사용자 정보 검색 ==//
 	public Optional<User> get(String id) {
 		String sql = "SELECT * FROM users WHERE id = ?";	    		
 	    
@@ -76,14 +76,14 @@ public class UserDaoJdbc implements UserDao {
 	    }
 	}
 
-	//== 테이블 전체 데이터 삭제 ==//
+	//== 테이블 전체 사용자 데이터 삭제 ==//
 	public void deleteAll() {
 		String sql = "DELETE FROM users";
 		//콜백 객체 생성을 내장 함수가 담당한다.
 		this.jdbcTemplate.update(sql);
 	}
 	
-	//== 테이블 정보 개수 조회 ==//
+	//== 사용자 전체 개수 조회 ==//
 	public int getCount(){
 		String sql = "SELECT COUNT(*) FROM users";
 		
@@ -93,10 +93,29 @@ public class UserDaoJdbc implements UserDao {
 		return (int)DataAccessUtils.singleResult(result);
 	}
 	
-	//== 테이블에 있는 전체 User 정보 가져오기
+	//== 사용자 전체 조회 ==//
 	public List<User> getAll() {
 		String sql = "SELECT * FROM users ORDER BY id DESC";
 		
 		return this.jdbcTemplate.query(sql, this.userMapper);
 	}
+	
+	//== 사용자 정보 수정 ==//
+	public void update(final User user) {
+		String sql = "UPDATE users SET name=?, "
+									+ "password=?, "
+									+ "level=?, "
+									+ "login=?, "
+									+ "recommend=? "
+				   + "WHERE id=?";
+		
+		this.jdbcTemplate.update(sql, user.getName()
+									, user.getPassword()
+									, user.getLevel().intValue()
+									, user.getLogin()
+									, user.getRecommend()
+									, user.getId());
+	
+	}
+	
 }
