@@ -74,7 +74,4 @@ public class UserServiceTest {
 		checkLevel(users.get(3), Level.GOLD);
 		checkLevel(users.get(4), Level.GOLD);
 	}
-	
-	
-	
 }
