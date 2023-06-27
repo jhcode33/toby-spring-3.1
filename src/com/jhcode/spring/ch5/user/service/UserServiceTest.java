@@ -74,4 +74,32 @@ public class UserServiceTest {
 		checkLevel(users.get(3), Level.GOLD);
 		checkLevel(users.get(4), Level.GOLD);
 	}
+	
+	@Test
+	public void add() {
+		userDao.deleteAll();
+		
+		User userWithLevel = users.get(4); //GOLD
+		User userWithOutLevel = users.get(0); //BASIC
+		userWithOutLevel.setLevel(null); //BASIC -> NULL, 비어있으면 다시 BASIC으로 설정되어야함.
+		
+		//GOLD -> GOLD 그대로 유지
+		userService.add(userWithLevel);
+		
+		//Null -> BASIC 처음 가입 유저는 BASIC으로 설정
+		userService.add(userWithOutLevel);
+		
+		//DB에 저장된 것을 불러와서 저장한 값이랑 비교함.
+		Optional<User> optionalLevelUser = userDao.get(userWithLevel.getId());
+		if(optionalLevelUser != null) {
+			User userWithLevelRead = optionalLevelUser.get();
+			assertEquals(userWithLevelRead.getLevel(), userWithLevel.getLevel());
+		}
+		
+		Optional<User> optionalOutLevelUser = userDao.get(userWithOutLevel.getId());
+		if(optionalOutLevelUser != null) { 
+			User userWithOutLevelRead = optionalOutLevelUser.get();
+			assertEquals(userWithOutLevelRead.getLevel(), userWithOutLevel.getLevel());
+		}
+	}
 }

@@ -50,4 +50,10 @@ public class UserService {
 		}
 	}
 	
+	//== 처음 사용자에게 BASIC Level 부여 ==//
+	public void add(User user) {
+		if (user.getLevel() == null) user.setLevel(Level.BASIC);
+		userDao.add(user);
+	}
+	
 }
