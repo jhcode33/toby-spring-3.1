@@ -1,5 +1,8 @@
 package com.jhcode.spring.ch5.user.service;
 
+import static com.jhcode.spring.ch5.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
+import static com.jhcode.spring.ch5.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
@@ -29,31 +32,36 @@ public class UserServiceTest {
 	
 	List<User> users;
 	
-//	@Test
-//	public void bean() {
-//		assertNotNull(userService);
-//	}
-	
 	@BeforeEach
 	public void setUp() {
 		
 		//배열을 리스트로 만들어주는 메소드
 		users = Arrays.asList(
-				new User("user1", "user1", "p1", Level.BASIC, 49, 0),
-				new User("user2", "user2", "p2", Level.BASIC, 50, 0),
-				new User("user3", "user3", "p3", Level.SILVER, 60, 29),
-				new User("user4", "user4", "p4", Level.SILVER, 60, 30),
+				new User("user1", "user1", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER -1, 0),
+				new User("user2", "user2", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
+				new User("user3", "user3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD -1),
+				new User("user4", "user4", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
 				new User("user5", "user5", "p5", Level.GOLD, 100, 100)
 				);
 	}
 	
 	//User의 Level과 인수로 받은 Level의 값을 비교하는 메소드
-	private void checkLevel(User user, Level expectedLevel) {
+	//어떤 레벨로 바뀌는지가 아니라, 다음 레벨로 바뀔 것인지를 확인한다.
+	private void checkLevel(User user, boolean upgraded) {
 		Optional<User> optionalUser = userDao.get(user.getId());
 		
 		if(optionalUser != null) {
 			User userUpdate = optionalUser.get();
-			assertEquals(userUpdate.getLevel(), expectedLevel);
+			
+			if(upgraded) {
+				//조건에 일치해서 다음 레벨로 업그레이드 되었을 경우
+				assertEquals(userUpdate.getLevel(), user.getLevel().nextLevel());
+			
+				//조건에 일치하지 않아서 다음 레벨로 업그레이드 되지 않았을 경우
+			} else {
+				assertEquals(userUpdate.getLevel(), user.getLevel());
+			}
+			
 		}
 	}
 	
@@ -68,11 +76,11 @@ public class UserServiceTest {
 		//DB의 모든 User을 가지고와서 Level 등급을 조정함
 		userService.upgradeLevels();
 		
-		checkLevel(users.get(0), Level.BASIC);
-		checkLevel(users.get(1), Level.SILVER);
-		checkLevel(users.get(2), Level.SILVER);
-		checkLevel(users.get(3), Level.GOLD);
-		checkLevel(users.get(4), Level.GOLD);
+		checkLevel(users.get(0), false);
+		checkLevel(users.get(1), true);
+		checkLevel(users.get(2), false);
+		checkLevel(users.get(3), true);
+		checkLevel(users.get(4), false);
 	}
 	
 	@Test

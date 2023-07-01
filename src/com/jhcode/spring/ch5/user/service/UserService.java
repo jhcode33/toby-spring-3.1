@@ -7,6 +7,9 @@ import com.jhcode.spring.ch5.user.domain.Level;
 import com.jhcode.spring.ch5.user.domain.User;
 
 public class UserService {
+	public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
+	public static final int MIN_RECOMMEND_FOR_GOLD = 30;
+	
 	
 	private UserDao userDao;
 	
@@ -20,35 +23,30 @@ public class UserService {
 		List<User> users = userDao.getAll();
 		
 		for(User user : users) {
-			//Level이 변화되었는지 체크하는 변수
-			Boolean changed = null;
-			
-			//BASIC -> SIVER
-			if (user.getLevel() == Level.BASIC && user.getLogin() >= 50) {
-				user.setLevel(Level.SILVER);
-				changed = true;
-				
-			//SIVER -> GOLD
-			} else if (user.getLevel() == Level.SILVER && user.getRecommend() >= 30) {
-				user.setLevel(Level.GOLD);
-				changed = true;
-				
-			//GOLD = Not Changed
-			} else if (user.getLevel() == Level.GOLD) {
-				changed = false;
-			
-			//Besides.. Not Changed
-			} else {
-				changed = false;
-			}
-			
-			//변화가 있을 경우만 DB에 값 변경
-			
-			if(changed) {
-				userDao.update(user);
+			if (canUpgradeLevel(user)) {
+				upgradeLevel(user);
 			}
 		}
 	}
+	
+	//== 업그레이드가 가능한지 확인하는 코드 ==//
+	private boolean canUpgradeLevel(User user) {
+		Level currentLevel = user.getLevel();
+		
+		switch(currentLevel) {
+		case BASIC : return (user.getLogin() >= MIN_LOGCOUNT_FOR_SILVER);
+		case SILVER : return (user.getRecommend() >= MIN_RECOMMEND_FOR_GOLD);
+		case GOLD : return false;
+		default : throw new IllegalArgumentException("Unknown Level : " + currentLevel);
+		}
+	}
+	
+	//== 업그레이드가 가능할 때 실제로 값을 변경하는 코드 ==//
+	private void upgradeLevel(User user) {
+		user.upgradeLevel();
+		userDao.update(user);
+	}
+	
 	
 	//== 처음 사용자에게 BASIC Level 부여 ==//
 	public void add(User user) {
