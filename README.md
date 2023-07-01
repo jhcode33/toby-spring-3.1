@@ -6,7 +6,9 @@ Maven 환경으로 변경하였고, 2023년 시점에 맞는 환경을 구성하
 아래 블로그에 각 챕터마다 설명을 덧붙여서 정리해두었습니다.
 <br/><br/>
 - **블로그** : [jhcode33의 기술블로그](https://jhcode33.tistory.com/2)
+
 #
+
 ### ⚙️개발환경
 - **IDE : STS3 - 3.9.18.RELEASE**
 - **SpringFramework : 5.3.20**
