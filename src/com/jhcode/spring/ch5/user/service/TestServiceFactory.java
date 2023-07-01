@@ -36,7 +36,9 @@ public class TestServiceFactory {
 	@Bean
 	public UserService userService() {
 		UserService userService = new UserService();
+		UserLevelUpgradePolicy userLevelUpgradePolicy = new UserLevelUpgradeImpl();
 		userService.setUserDao(userDao());
+		userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
 		return userService;
 	}
 }

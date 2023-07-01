@@ -1,7 +1,7 @@
 package com.jhcode.spring.ch5.user.service;
 
-import static com.jhcode.spring.ch5.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static com.jhcode.spring.ch5.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_RECOMMEND_FOR_GOLD;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
