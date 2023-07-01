@@ -8,8 +8,8 @@ import com.jhcode.spring.ch5.user.domain.User;
 
 public class UserService {
 	
-	private UserLevelUpgradePolicy userLevleUpgrade;
-	private UserDao userDao;
+	protected UserLevelUpgradePolicy userLevleUpgrade;
+	protected UserDao userDao;
 	
 	//UserDao 주입
 	public void setUserDao(UserDao userDao) {
@@ -21,7 +21,7 @@ public class UserService {
 		this.userLevleUpgrade = userLevelUpgradePolicy;
 	}
 	
-	//로그인과 추천수에 따라 사용자의 레벨을 업그레이드하는 비즈니스 코드
+	//로그인과 추천수에 따라 전체 사용자의 레벨을 업그레이드하는 비즈니스 코드
 	public void upgradeLevels() {
 		List<User> users = userDao.getAll();
 		
@@ -38,7 +38,7 @@ public class UserService {
 	}
 	
 	//== 업그레이드가 가능할 때 실제로 값을 변경하는 코드 ==//
-	private void upgradeLevel(User user) {
+	protected void upgradeLevel(User user) {
 		userLevleUpgrade.upgradeLevel(user, userDao);
 	}
 	

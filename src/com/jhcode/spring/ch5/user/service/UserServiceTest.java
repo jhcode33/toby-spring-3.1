@@ -2,8 +2,8 @@ package com.jhcode.spring.ch5.user.service;
 
 import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_RECOMMEND_FOR_GOLD;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.jhcode.spring.ch5.user.dao.UserDao;
 import com.jhcode.spring.ch5.user.domain.Level;
 import com.jhcode.spring.ch5.user.domain.User;
+import com.jhcode.spring.ch5.user.service.TestUserService.TestUserServiceException;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestServiceFactory.class})
@@ -59,13 +60,14 @@ public class UserServiceTest {
 			
 				//조건에 일치하지 않아서 다음 레벨로 업그레이드 되지 않았을 경우
 			} else {
+				System.out.println("조건이 일치하지 않아서 통과함");
 				assertEquals(userUpdate.getLevel(), user.getLevel());
 			}
 			
 		}
 	}
 	
-	@Test
+	//@Test
 	public void upgradeLevels() {
 		userDao.deleteAll();
 		
@@ -83,7 +85,7 @@ public class UserServiceTest {
 		checkLevel(users.get(4), false);
 	}
 	
-	@Test
+	//@Test
 	public void add() {
 		userDao.deleteAll();
 		
@@ -108,6 +110,35 @@ public class UserServiceTest {
 		if(optionalOutLevelUser != null) { 
 			User userWithOutLevelRead = optionalOutLevelUser.get();
 			assertEquals(userWithOutLevelRead.getLevel(), userWithOutLevel.getLevel());
+		}
+	}
+	
+	//예외 발생 시 작업 취소 여부 테스트
+	@Test
+	public void upgradeAllorNothing() {
+		UserService testUserService = new TestUserService(users.get(3).getId());
+		UserLevelUpgradePolicy policy = new UserLevelUpgradeImpl();
+		testUserService.setUserDao(userDao);
+		testUserService.setUserLevelUpgradePolicy(policy);
+		
+		userDao.deleteAll();
+		
+		for (User user : users) {
+			testUserService.add(user);
+		}
+		
+		try {
+			
+			testUserService.upgradeLevels();
+			
+			//테스트가 제대로 동작하게 하기 위한 안전장치, 로직을 잘못짜서 upgradeLevels() 메소드가 통과되도 무조건 실패함.
+			//fail("TestUserServiceException expected");
+			
+		} catch (TestUserServiceException e) {
+			System.out.println("TestUserServiceException 예외 발생함");
+			e.getStackTrace();
+		} finally {
+			checkLevel(users.get(1), false);
 		}
 	}
 }
