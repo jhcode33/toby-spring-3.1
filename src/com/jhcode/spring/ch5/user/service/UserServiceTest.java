@@ -3,11 +3,12 @@ package com.jhcode.spring.ch5.user.service;
 import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_RECOMMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,9 @@ public class UserServiceTest {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	DataSource dataSource;
 	
 	@Autowired
 	private UserDao userDao;
@@ -68,7 +72,7 @@ public class UserServiceTest {
 	}
 	
 	//@Test
-	public void upgradeLevels() {
+	public void upgradeLevels() throws Exception {
 		userDao.deleteAll();
 		
 		for(User user : users) {
@@ -115,10 +119,11 @@ public class UserServiceTest {
 	
 	//예외 발생 시 작업 취소 여부 테스트
 	@Test
-	public void upgradeAllorNothing() {
+	public void upgradeAllorNothing() throws Exception {
 		UserService testUserService = new TestUserService(users.get(3).getId());
 		UserLevelUpgradePolicy policy = new UserLevelUpgradeImpl();
 		testUserService.setUserDao(userDao);
+		testUserService.setDataSource(dataSource);
 		testUserService.setUserLevelUpgradePolicy(policy);
 		
 		userDao.deleteAll();
