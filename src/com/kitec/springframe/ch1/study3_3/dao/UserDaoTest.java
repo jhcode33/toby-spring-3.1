@@ -8,13 +8,11 @@ public class UserDaoTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 //		ConnectionMaker connectionMaker = new DConnectionMaker();
 //		UserDao dao = new UserDao(connectionMaker);
-
-		ConnectionFactory connectionFactory = new ConnectionFactory();
-		ConnectionMaker connectionMaker = connectionFactory.createConnectionMaker("D");
 		
-		//== UserDao는 어떤 ConnectionMaker의 구현체가 생성되는지 모르고, Client가 결정하고 생성한 ConnectionMaker 구현체를
-		//== Interface 타입으로 받아서 사용한다.
-		UserDao dao = new UserDao(connectionMaker);
+		DaoFactory daoFactory = new DDaoFactory();
+	  //DaoFactory daoFactory = new UDaoFactory();
+		
+		UserDao dao = daoFactory.createUserDao();
 		
 		User user = new User();
 		user.setId("whiteship");
