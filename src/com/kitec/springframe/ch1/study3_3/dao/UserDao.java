@@ -7,9 +7,11 @@ import java.sql.SQLException;
 
 import com.kitec.springframe.ch1.study3_3.domain.User;
 
-public class UserDao {	
+public abstract class UserDao {	
 	
-	private ConnectionMaker connectionMaker;
+	protected ConnectionMaker connectionMaker;
+	
+	public UserDao(){};
 	
 	public UserDao(ConnectionMaker simpleConnectionMaker) {
 		this.connectionMaker = simpleConnectionMaker;
@@ -49,6 +51,8 @@ public class UserDao {
 		c.close();
 
 		return user;
-	}	
+	}
+	
+	abstract void createProduct();
 
 }

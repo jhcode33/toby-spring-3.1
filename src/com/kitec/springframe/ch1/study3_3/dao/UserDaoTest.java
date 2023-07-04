@@ -6,13 +6,9 @@ import com.kitec.springframe.ch1.study3_3.domain.User;
 
 public class UserDaoTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-//		ConnectionMaker connectionMaker = new DConnectionMaker();
-//		UserDao dao = new UserDao(connectionMaker);
-		
-		DaoFactory daoFactory = new DDaoFactory();
-	  //DaoFactory daoFactory = new UDaoFactory();
-		
-		UserDao dao = daoFactory.createUserDao();
+
+		UserDao dao = new DUserDao();
+		dao.createProduct();
 		
 		User user = new User();
 		user.setId("whiteship");
