@@ -59,12 +59,11 @@ public class UserServiceTest {
 			User userUpdate = optionalUser.get();
 			
 			if(upgraded) {
-				//조건에 일치해서 다음 레벨로 업그레이드 되었을 경우
+				System.out.println("Level 업그레이드 되었음");
 				assertEquals(userUpdate.getLevel(), user.getLevel().nextLevel());
 			
-				//조건에 일치하지 않아서 다음 레벨로 업그레이드 되지 않았을 경우
 			} else {
-				System.out.println("조건이 일치하지 않아서 통과함");
+				System.out.println("Level 업그레이드 되지 않음");
 				assertEquals(userUpdate.getLevel(), user.getLevel());
 			}
 			

@@ -95,7 +95,7 @@ public class UserDaoJdbc implements UserDao {
 	
 	//== 사용자 전체 조회 ==//
 	public List<User> getAll() {
-		String sql = "SELECT * FROM users ORDER BY id DESC";
+		String sql = "SELECT * FROM users";
 		
 		return this.jdbcTemplate.query(sql, this.userMapper);
 	}
