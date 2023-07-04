@@ -6,7 +6,4 @@ public class DUserDao extends UserDao {
 	void createProduct() {
 		this.connectionMaker =  new DConnectionMaker();
 	}
-	
-	
-
 }

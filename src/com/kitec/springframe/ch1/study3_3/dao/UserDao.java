@@ -11,6 +11,8 @@ public abstract class UserDao {
 	
 	protected ConnectionMaker connectionMaker;
 	
+	abstract void createProduct();
+	
 	public UserDao(){};
 	
 	public UserDao(ConnectionMaker simpleConnectionMaker) {
@@ -53,6 +55,5 @@ public abstract class UserDao {
 		return user;
 	}
 	
-	abstract void createProduct();
 
 }
