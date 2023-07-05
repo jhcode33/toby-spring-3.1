@@ -8,12 +8,25 @@ public class DaoFactory {
 	
 	@Bean
 	public UserDao userDao() {
-		return new UserDao(connectionMaker());
+		UserDao userDao = new UserDao();
+		userDao.setConnectionMaker(connectionMaker());
+		return userDao;
 	}	
 	
 	@Bean
 	public ConnectionMaker connectionMaker() {
-		return new DConnectionMaker();
+		DConnectionMaker maker = new DConnectionMaker();
+		
+		String driverClass = "org.mariadb.jdbc.Driver";
+		String url = "jdbc:mariadb://localhost:3306/toby_kitec?characterEncoding=UTF-8";
+		String username = "root";
+		String password = "1234";
+		
+		maker.setDriverClass(driverClass);
+		maker.setUrl(url);
+		maker.setUsername(username);
+		maker.setPassword(password);
+		return maker;
 	}
 
 }
