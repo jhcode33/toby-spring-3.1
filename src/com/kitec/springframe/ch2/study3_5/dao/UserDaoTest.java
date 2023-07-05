@@ -21,6 +21,10 @@ public class UserDaoTest {
 	private User user2;
 	private User user3;	
 	
+	//Test 클래스는 매번 새롭게 생성됨, 이는 각 단위테스트의 독립성을 지키기 위함
+	//breakpoint를 사용해서 UserDaoTest 클래스가 다르게 생성되는지 확인함.
+	public UserDaoTest() {};
+	
 	// 각 단위 테스트가 실행되기 전에 먼저 호출된다
 	// 이를 픽스처(fixture) 테스트를 수행하는 데 필요한 정보나 오브젝트라고 한다
 	@BeforeEach
