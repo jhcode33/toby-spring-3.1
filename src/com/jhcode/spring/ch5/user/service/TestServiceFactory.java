@@ -38,6 +38,7 @@ public class TestServiceFactory {
 		UserService userService = new UserService();
 		UserLevelUpgradePolicy userLevelUpgradePolicy = new UserLevelUpgradeImpl();
 		userService.setUserDao(userDao());
+		userService.setDataSource(dataSource());
 		userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
 		return userService;
 	}

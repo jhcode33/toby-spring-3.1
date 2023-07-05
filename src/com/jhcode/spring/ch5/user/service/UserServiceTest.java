@@ -70,7 +70,7 @@ public class UserServiceTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void upgradeLevels() throws Exception {
 		userDao.deleteAll();
 		
@@ -88,7 +88,7 @@ public class UserServiceTest {
 		checkLevel(users.get(4), false);
 	}
 	
-	//@Test
+	@Test
 	public void add() {
 		userDao.deleteAll();
 		
