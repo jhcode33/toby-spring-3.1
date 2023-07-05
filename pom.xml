@@ -58,6 +58,10 @@
         <version>3.8.1</version>
         <configuration>
           <release>11</release>
+          <!-- JUnit4를 호환하기 위한 클래스들을 사용하지 않도록 설정함 -->
+          <excludes>
+          	<exclude>**/VintageTest*.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
