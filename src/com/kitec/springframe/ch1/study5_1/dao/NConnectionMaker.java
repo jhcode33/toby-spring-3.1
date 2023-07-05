@@ -1,10 +1,10 @@
-package com.kitec.springframe.ch1.study4_2.dao;
+package com.kitec.springframe.ch1.study5_1.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DConnectionMaker implements ConnectionMaker {
+public class NConnectionMaker implements ConnectionMaker {
 
 	@Override
 	public Connection makeConnection() throws ClassNotFoundException, SQLException {
@@ -14,5 +14,5 @@ public class DConnectionMaker implements ConnectionMaker {
 				"1234");
 		return c;
 	}
-
+	
 }

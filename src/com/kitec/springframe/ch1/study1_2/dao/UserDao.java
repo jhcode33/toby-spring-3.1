@@ -11,7 +11,7 @@ import com.kitec.springframe.ch1.study1_2.domain.User;
 public class UserDao {
 	public void add(User user) throws ClassNotFoundException, SQLException {
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/toby_study?characterEncoding=UTF-8", 
+		Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/toby_kitec?characterEncoding=UTF-8", 
 				"root",
 				"1234");
 
@@ -30,7 +30,7 @@ public class UserDao {
 
 	public User get(String id) throws ClassNotFoundException, SQLException {
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/toby_study?characterEncoding=UTF-8", 
+		Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/toby_kitec?characterEncoding=UTF-8", 
 				"root",
 				"1234");
 		PreparedStatement ps = c

@@ -49,7 +49,7 @@ public class UserDao {
 	//세가지 관심사 중에 데이터 베이스 연결에 대한 관심사를 뽑아내서 리팩토링 했다.
 	private Connection getConnection() throws ClassNotFoundException, SQLException {
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/toby_study?characterEncoding=UTF-8", 
+		Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/toby_kitec?characterEncoding=UTF-8", 
 				"root",
 				"1234");
 		return c;
