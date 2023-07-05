@@ -4,7 +4,9 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.jhcode.spring.ch5.user.dao.UserDaoJdbc;
 
@@ -34,12 +36,19 @@ public class TestServiceFactory {
 	}
 	
 	@Bean
+	public DataSourceTransactionManager transactionManager() {
+		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+		transactionManager.setDataSource(dataSource());
+		return transactionManager;
+	}
+	
+	@Bean
 	public UserService userService() {
 		UserService userService = new UserService();
 		UserLevelUpgradePolicy userLevelUpgradePolicy = new UserLevelUpgradeImpl();
 		userService.setUserDao(userDao());
-		userService.setDataSource(dataSource());
 		userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
+		userService.setTranscationManager(transactionManager());
 		return userService;
 	}
 }
