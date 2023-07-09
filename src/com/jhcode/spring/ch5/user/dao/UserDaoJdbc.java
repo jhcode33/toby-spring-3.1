@@ -120,7 +120,5 @@ public class UserDaoJdbc implements UserDao {
 									, user.getRecommend()
 									, user.getEmail()
 									, user.getId());
-	
 	}
-	
 }
