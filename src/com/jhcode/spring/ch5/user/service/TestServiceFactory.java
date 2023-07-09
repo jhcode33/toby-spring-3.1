@@ -43,11 +43,17 @@ public class TestServiceFactory {
 	}
 	
 	@Bean
+	public UserLevelUpgradePolicy userLevelUpgradePolicy() {
+		UserLevelUpgradeImpl userLevelUpgradePolicy = new UserLevelUpgradeImpl();
+		userLevelUpgradePolicy.setDummyMailSender(new DummyMailSender());
+		return userLevelUpgradePolicy;
+	}
+	
+	@Bean
 	public UserService userService() {
 		UserService userService = new UserService();
-		UserLevelUpgradePolicy userLevelUpgradePolicy = new UserLevelUpgradeImpl();
 		userService.setUserDao(userDao());
-		userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
+		userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
 		userService.setTranscationManager(transactionManager());
 		return userService;
 	}

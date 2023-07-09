@@ -60,11 +60,11 @@ public class UserServiceTest {
 			User userUpdate = optionalUser.get();
 			
 			if(upgraded) {
-				System.out.println("Level 업그레이드 되었음");
+				System.out.println(user.getId() + " : Level 업그레이드 되었음");
 				assertEquals(userUpdate.getLevel(), user.getLevel().nextLevel());
 			
 			} else {
-				System.out.println("Level 업그레이드 되지 않음");
+				System.out.println(user.getId() + " : Level 업그레이드 되지 않음");
 				assertEquals(userUpdate.getLevel(), user.getLevel());
 			}
 			
@@ -121,7 +121,9 @@ public class UserServiceTest {
 	@Test
 	public void upgradeAllorNothing() throws Exception {
 		UserService testUserService = new TestUserService(users.get(3).getId());
-		UserLevelUpgradePolicy policy = new UserLevelUpgradeImpl();
+		UserLevelUpgradeImpl policy = new UserLevelUpgradeImpl();
+		policy.setDummyMailSender(new DummyMailSender());
+		
 		testUserService.setUserDao(userDao);
 		testUserService.setTranscationManager(transactionManager);
 		testUserService.setUserLevelUpgradePolicy(policy);
@@ -133,15 +135,11 @@ public class UserServiceTest {
 		}
 		
 		try {
-			
 			testUserService.upgradeLevels();
-			
 			//테스트가 제대로 동작하게 하기 위한 안전장치, 로직을 잘못짜서 upgradeLevels() 메소드가 통과되도 무조건 실패함.
 			//fail("TestUserServiceException expected");
-			
 		} catch (TestUserServiceException e) {
 			System.out.println("TestUserServiceException 예외 발생함");
-			throw e;
 		} finally {
 			checkLevel(users.get(1), false);
 		}
