@@ -43,11 +43,11 @@ public class UserServiceTest {
 		
 		//배열을 리스트로 만들어주는 메소드
 		users = Arrays.asList(
-				new User("user1", "user1", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER -1, 0),
-				new User("user2", "user2", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-				new User("user3", "user3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD -1),
-				new User("user4", "user4", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
-				new User("user5", "user5", "p5", Level.GOLD, 100, 100)
+				new User("user1", "user1", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER -1, 0, ""),
+				new User("user2", "user2", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0, ""),
+				new User("user3", "user3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD -1, ""),
+				new User("user4", "user4", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD, ""),
+				new User("user5", "user5", "p5", Level.GOLD, 100, 100, "")
 				);
 	}
 	
@@ -141,7 +141,7 @@ public class UserServiceTest {
 			
 		} catch (TestUserServiceException e) {
 			System.out.println("TestUserServiceException 예외 발생함");
-			e.getStackTrace();
+			throw e;
 		} finally {
 			checkLevel(users.get(1), false);
 		}

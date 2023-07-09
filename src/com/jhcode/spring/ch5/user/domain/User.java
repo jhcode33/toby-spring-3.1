@@ -7,19 +7,21 @@ public class User {
 	Level level;
 	int login;
 	int recommend;
+	String eamil;
 
 	// == 기본 생성자 ==//
 	public User() {
 	}
 
 	// == 테스트를 쉽게 하기 위해 파라미터가 있는 생성자 ==//
-	public User(String id, String name, String password, Level level, int login, int recommend) {
+	public User(String id, String name, String password, Level level, int login, int recommend, String email) {
 		this.id = id;
 		this.name = name;
 		this.password = password;
 		this.level = level;
 		this.login = login;
 		this.recommend = recommend;
+		this.eamil = email;
 	}
 	
 	//== 레벨 업그레이드 로직 ==//
@@ -54,6 +56,14 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getEmail() {
+		return eamil;
+	}
+	
+	public void setEamil(String email) {
+		this.eamil = email;
 	}
 
 	public Level getLevel() {

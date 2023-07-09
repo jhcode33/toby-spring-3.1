@@ -40,9 +40,9 @@ public class UserDaoTest {
 	
 	@BeforeEach
     public void setUp() {
-        this.user1 = new User("user1", "one", "1111", Level.BASIC, 1, 1);
-        this.user2 = new User("user2", "two", "2222", Level.SILVER, 55, 2);
-        this.user3 = new User("user3", "three", "3333", Level.GOLD, 100, 3);
+        this.user1 = new User("user1", "one", "1111", Level.BASIC, 1, 1, "");
+        this.user2 = new User("user2", "two", "2222", Level.SILVER, 55, 2, "");
+        this.user3 = new User("user3", "three", "3333", Level.GOLD, 100, 3, "");
     }
 	
 	@Test
