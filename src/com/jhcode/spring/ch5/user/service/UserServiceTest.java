@@ -4,6 +4,7 @@ import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_LOGCOU
 import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_RECOMMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -43,11 +48,11 @@ public class UserServiceTest {
 		
 		//배열을 리스트로 만들어주는 메소드
 		users = Arrays.asList(
-				new User("user1", "user1", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER -1, 0, ""),
-				new User("user2", "user2", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0, ""),
-				new User("user3", "user3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD -1, ""),
-				new User("user4", "user4", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD, ""),
-				new User("user5", "user5", "p5", Level.GOLD, 100, 100, "")
+				new User("user1", "user1", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER -1, 0, "user1@go.kr"),
+				new User("user2", "user2", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0, "user2@go.kr"),
+				new User("user3", "user3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD -1, "user3@go.kr"),
+				new User("user4", "user4", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD, "user4@go.kr"),
+				new User("user5", "user5", "p5", Level.GOLD, 100, 100, "user5@go.kr")
 				);
 	}
 	
@@ -71,13 +76,34 @@ public class UserServiceTest {
 		}
 	}
 	
-	@Test
+	//== upgradeLevels() 테스트에 사용될 Mock 객체 ==//
+	static class MockMailSender implements MailSender {
+		private List<String> requests = new ArrayList<String>();	
+		
+		public List<String> getRequests() {
+			return requests;
+		}
+
+		public void send(SimpleMailMessage mailMessage) throws MailException {
+			requests.add(mailMessage.getTo()[0]);  
+		}
+
+		public void send(SimpleMailMessage[] mailMessage) throws MailException {
+		}
+	}
+	
+	@Test @DirtiesContext
 	public void upgradeLevels() throws Exception {
 		userDao.deleteAll();
 		
 		for(User user : users) {
 			userDao.add(user);
 		}
+		
+		MockMailSender mockMailSender = new MockMailSender();
+		UserLevelUpgradeImpl policy = new UserLevelUpgradeImpl();
+		policy.setMailSender(mockMailSender);
+		userService.setUserLevelUpgradePolicy(policy);
 		
 		//DB의 모든 User을 가지고와서 Level 등급을 조정함
 		userService.upgradeLevels();
@@ -87,6 +113,11 @@ public class UserServiceTest {
 		checkLevel(users.get(2), false);
 		checkLevel(users.get(3), true);
 		checkLevel(users.get(4), false);
+		
+		List<String> request = mockMailSender.getRequests();
+		assertEquals(request.size(), 2);
+		assertEquals(request.get(0), users.get(1).getEmail());
+		assertEquals(request.get(1), users.get(3).getEmail());
 	}
 	
 	@Test
@@ -122,7 +153,7 @@ public class UserServiceTest {
 	public void upgradeAllorNothing() throws Exception {
 		UserService testUserService = new TestUserService(users.get(3).getId());
 		UserLevelUpgradeImpl policy = new UserLevelUpgradeImpl();
-		policy.setDummyMailSender(new DummyMailSender());
+		policy.setMailSender(new DummyMailSender());
 		
 		testUserService.setUserDao(userDao);
 		testUserService.setTranscationManager(transactionManager);

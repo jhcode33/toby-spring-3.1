@@ -7,7 +7,7 @@ public class User {
 	Level level;
 	int login;
 	int recommend;
-	String eamil;
+	String email;
 
 	// == 기본 생성자 ==//
 	public User() {
@@ -21,7 +21,7 @@ public class User {
 		this.level = level;
 		this.login = login;
 		this.recommend = recommend;
-		this.eamil = email;
+		this.email = email;
 	}
 	
 	//== 레벨 업그레이드 로직 ==//
@@ -59,11 +59,11 @@ public class User {
 	}
 	
 	public String getEmail() {
-		return eamil;
+		return email;
 	}
 	
 	public void setEamil(String email) {
-		this.eamil = email;
+		this.email = email;
 	}
 
 	public Level getLevel() {

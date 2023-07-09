@@ -45,7 +45,7 @@ public class TestServiceFactory {
 	@Bean
 	public UserLevelUpgradePolicy userLevelUpgradePolicy() {
 		UserLevelUpgradeImpl userLevelUpgradePolicy = new UserLevelUpgradeImpl();
-		userLevelUpgradePolicy.setDummyMailSender(new DummyMailSender());
+		userLevelUpgradePolicy.setMailSender(new DummyMailSender());
 		return userLevelUpgradePolicy;
 	}
 	

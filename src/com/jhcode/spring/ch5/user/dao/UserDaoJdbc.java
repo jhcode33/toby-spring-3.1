@@ -35,6 +35,7 @@ public class UserDaoJdbc implements UserDao {
 					user.setLevel(Level.valueOf(rs.getInt("level")));
 					user.setLogin(rs.getInt("login"));
 					user.setRecommend(rs.getInt("recommend"));
+					user.setEamil(rs.getString("email"));
 					return user;
 				}
 			};
@@ -48,21 +49,23 @@ public class UserDaoJdbc implements UserDao {
 			user.setPassword(rs.getString("password"));
 			user.setLevel(Level.valueOf(rs.getInt("level")));
 			user.setLogin(rs.getInt("login"));
-			user.setRecommend(rs.getInt("recommend"));            
+			user.setRecommend(rs.getInt("recommend"));      
+			user.setEamil(rs.getString("email"));
             return user;
         });
     }
 		
 	//== DB에 사용자 추가 ==//
 	public void add(final User user) {
-		String sql = "INSERT INTO users(id, name, password, level, login, recommend) " +
-					 "VALUES(?,?,?,?,?,?)"; 
+		String sql = "INSERT INTO users(id, name, password, level, login, recommend, email) " +
+					 "VALUES(?,?,?,?,?,?,?)"; 
 		this.jdbcTemplate.update(sql, user.getId(), 
 									  user.getName(), 
 									  user.getPassword(), 
 									  user.getLevel().intValue(),
 									  user.getLogin(), 
-									  user.getRecommend());
+									  user.getRecommend(),
+									  user.getEmail());
 	}
 	
 	//== DB에서 id에 해당하는 사용자 정보 검색 ==//
@@ -106,7 +109,8 @@ public class UserDaoJdbc implements UserDao {
 									+ "password=?, "
 									+ "level=?, "
 									+ "login=?, "
-									+ "recommend=? "
+									+ "recommend=?, "
+									+ "email=? "
 				   + "WHERE id=?";
 		
 		this.jdbcTemplate.update(sql, user.getName()
@@ -114,6 +118,7 @@ public class UserDaoJdbc implements UserDao {
 									, user.getLevel().intValue()
 									, user.getLogin()
 									, user.getRecommend()
+									, user.getEmail()
 									, user.getId());
 	
 	}

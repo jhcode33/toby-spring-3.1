@@ -1,5 +1,6 @@
 package com.jhcode.spring.ch5.user.service;
 
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
 import com.jhcode.spring.ch5.user.dao.UserDao;
@@ -11,9 +12,9 @@ public class UserLevelUpgradeImpl implements UserLevelUpgradePolicy {
 	public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
 	public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 	
-	private DummyMailSender mailSender;
+	private MailSender mailSender;
 	
-	public void setDummyMailSender(DummyMailSender dummyMailSender) {
+	public void setMailSender(MailSender dummyMailSender) {
 		this.mailSender = dummyMailSender;
 	}
 	
