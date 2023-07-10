@@ -3,13 +3,23 @@ package com.jhcode.spring.ch5.user.service;
 import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_RECOMMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
-import javax.sql.DataSource;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -173,6 +183,51 @@ public class UserServiceTest {
 			System.out.println("TestUserServiceException 예외 발생함");
 		} finally {
 			checkLevel(users.get(1), false);
+		}
+	}
+	
+	@Test
+	public void sendEmailToGmail() throws UnsupportedEncodingException {
+		String host = "smtp.gmail.com";
+		int port = 587;
+		String username = "메일을 전송할 아이디";
+		String password = "앱 어플리케이션 비밀번호";
+		
+		// 수진자 이메일 주소
+		String toAddress = "메일을 받을 아이디";
+		
+		// 메일 속성 설정
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.prot", port);
+		
+		// 인증 객체 생성
+		Authenticator authenticator = new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		};
+		
+		// 세션 생성
+		Session session = Session.getInstance(props, authenticator);
+		
+		try {
+			MimeMessage message = new MimeMessage(session);
+		
+			message.setFrom(new InternetAddress(username));
+			message.setRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+			message.setSubject(MimeUtility.encodeText("반가워요", "UTF-8", "B"));
+			message.setText("테스트 메일입니다.", "UTF-8");
+			
+			// 메일 전송
+			Transport.send(message);
+			
+			System.out.println("Email sent successfully!");
+		} catch (Exception e) {
+			System.out.println("Failed to send email. Error message: " + e.getMessage());
+			fail("This sendEmailToFmail test is failed!!");
 		}
 	}
 }
