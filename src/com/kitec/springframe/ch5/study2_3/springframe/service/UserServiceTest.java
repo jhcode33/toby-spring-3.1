@@ -44,6 +44,17 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	public void addAll() throws Exception {
+		
+		userDao.deleteAll();
+		
+		userService.addAll(users);
+		
+//		checkLevelUpgraded(users.get(0), false);
+//		checkLevelUpgraded(users.get(1), true);
+	}
+	
+	@Test
 	public void upgradeLevels() throws Exception {
 		userDao.deleteAll();
 		for(User user : users) userDao.add(user);
