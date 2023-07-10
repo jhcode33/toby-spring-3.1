@@ -83,7 +83,7 @@ public class UserServiceTest {
 		}
 	}
 	
-	//== upgradeLevels() 테스트에 사용될 Mock 객체 ==//
+	//== upgradeLevels() 테스트에 사용될 MailSender Mock 객체 ==//
 	static class MockMailSender implements MailSender {
 		private List<String> requests = new ArrayList<String>();	
 		
@@ -99,30 +99,65 @@ public class UserServiceTest {
 		}
 	}
 	
-	@Test @DirtiesContext
-	public void upgradeLevels() throws Exception {
-		userDao.deleteAll();
+	//== upgradeLevels() 테스트에 사용될 UserDao Mock 객체 ==//
+	static class MockUserDao implements UserDao {
+		//업그레이드 후보와 업그레이드 된 결과를 저장할 변수
+		private List<User> users;
+		private List<User> updated = new ArrayList();
 		
-		for(User user : users) {
-			userDao.add(user);
+		//생성자
+		private MockUserDao(List<User> users) {
+			this.users = users;
 		}
+		
+		private List<User> getUpdated(){
+			return this.updated;
+		}
+		
+		//== 스텁 기능 제공 ==//
+		public List<User> getAll(){
+			return this.users;
+		}
+		
+		//== Mock Oject 기능 제공 ==//
+		public void update(User user) {
+			updated.add(user);
+		}
+		
+		//사용되지 않는 기능, UnsupportedOperationException을 발생시키는 것이 좋다
+		public void add(User user) { throw new UnsupportedOperationException(); }
+		public void deleteAll() { throw new UnsupportedOperationException(); }
+		public Optional<User> get(String id) { throw new UnsupportedOperationException(); }
+		public int getCount() { throw new UnsupportedOperationException(); }
+	}
+	
+	@Test
+	public void upgradeLevels() throws Exception {
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
+		
+		MockUserDao mockUserDao = new MockUserDao(this.users);
+		userServiceImpl.setUserDao(mockUserDao);
 		
 		MockMailSender mockMailSender = new MockMailSender();
 		userServiceImpl.setMailSender(mockMailSender);
 		
-		//DB의 모든 User을 가지고와서 Level 등급을 조정함
-		userService.upgradeLevels();
+		userServiceImpl.upgradeLevels();
 		
-		checkLevel(users.get(0), false);
-		checkLevel(users.get(1), true);
-		checkLevel(users.get(2), false);
-		checkLevel(users.get(3), true);
-		checkLevel(users.get(4), false);
+		List<User> updated = mockUserDao.getUpdated();
+		assertEquals(updated.size(), 2);
+		checkUserAndLevel(updated.get(0), "user2", Level.SILVER);
+		checkUserAndLevel(updated.get(1), "user4", Level.GOLD);
 		
-		List<String> request = mockMailSender.getRequests();
+		List<String> request = mockMailSender.getRequests();  
 		assertEquals(request.size(), 2);
 		assertEquals(request.get(0), users.get(1).getEmail());
 		assertEquals(request.get(1), users.get(3).getEmail());
+	}
+	
+	//== id와 level을 확인하는 헬퍼 메소드 ==//
+	private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+		assertEquals(updated.getId(), expectedId);
+		assertEquals(updated.getLevel(), expectedLevel);
 	}
 	
 	@Test
