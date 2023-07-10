@@ -36,13 +36,18 @@ public class TestServiceFactory {
 	
 	@Bean
 	public UserService userService() {
-		UserService userService = new UserService();
-		userService.setUserDao(userDao());
-		userService.setTransactionManager(transactionManager());
-		//<property name="mailSender" ref="mailSender" />
-		userService.setMailSender(mailSender());
-		//userService.setDataSource(dataSource());
-		return userService;
+		UserServiceTx userServiceTx = new UserServiceTx();
+		userServiceTx.setTransactionManager(transactionManager());
+		userServiceTx.setUserService(userServiceImpl());
+		return userServiceTx;
+	}
+	
+	@Bean
+	public UserServiceImpl userServiceImpl() {
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
+		userServiceImpl.setUserDao(userDao());
+		userServiceImpl.setMailSender(mailSender());
+		return userServiceImpl;
 	}
 	
 	@Bean

@@ -2,7 +2,7 @@ package com.jhcode.spring.ch6.user.service;
 
 import com.jhcode.spring.ch6.user.domain.User;
 
-public class TestUserService extends UserService {
+public class TestUserService extends UserServiceImpl {
 	
 	private String id;
 	

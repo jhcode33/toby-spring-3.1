@@ -33,7 +33,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl;
 import com.jhcode.spring.ch6.user.dao.UserDao;
 import com.jhcode.spring.ch6.user.domain.Level;
 import com.jhcode.spring.ch6.user.domain.User;
@@ -45,6 +44,7 @@ public class UserServiceTest {
 	
 	@Autowired private UserDao userDao;
 	@Autowired private UserService userService;
+	@Autowired private UserServiceImpl userServiceImpl;
 	@Autowired private PlatformTransactionManager transactionManager;
 	@Autowired private MailSender mailSender;
 	
@@ -108,7 +108,7 @@ public class UserServiceTest {
 		}
 		
 		MockMailSender mockMailSender = new MockMailSender();
-		userService.setMailSender(mockMailSender);
+		userServiceImpl.setMailSender(mockMailSender);
 		
 		//DB의 모든 User을 가지고와서 Level 등급을 조정함
 		userService.upgradeLevels();
@@ -156,10 +156,13 @@ public class UserServiceTest {
 	//예외 발생 시 작업 취소 여부 테스트
 	@Test
 	public void upgradeAllorNothing() throws Exception {
-		UserService testUserService = new TestUserService(users.get(3).getId());
+		UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(userDao);
-		testUserService.setTransactionManager(transactionManager);
 		testUserService.setMailSender(mailSender);
+		
+		UserServiceTx txUserService = new UserServiceTx();
+		txUserService.setTransactionManager(transactionManager);
+		txUserService.setUserService(testUserService);
 		
 		userDao.deleteAll();
 		
@@ -168,7 +171,7 @@ public class UserServiceTest {
 		}
 		
 		try {
-			testUserService.upgradeLevels();
+			txUserService.upgradeLevels();
 			//테스트가 제대로 동작하게 하기 위한 안전장치, 로직을 잘못짜서 upgradeLevels() 메소드가 통과되도 무조건 실패함.
 			//fail("TestUserServiceException expected");
 		} catch (TestUserServiceException e) {
