@@ -1,9 +1,14 @@
 package com.jhcode.spring.ch6.user.service;
 
-import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static com.jhcode.spring.ch5.user.service.UserLevelUpgradeImpl.MIN_RECOMMEND_FOR_GOLD;
+import static com.jhcode.spring.ch6.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static com.jhcode.spring.ch6.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ import javax.mail.internet.MimeUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -57,8 +63,8 @@ public class UserServiceTest {
 		users = Arrays.asList(
 				new User("user1", "user1", "p1", "user1@go.kr", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER -1, 0),
 				new User("user2", "user2", "p2", "user2@go.kr", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-				new User("user3", "user3", "p3", "user3@go.kr", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD -1),
-				new User("user4", "user4", "p4", "user4@go.kr", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+				new User("user3", "user3", "p3", "user3@go.kr", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD -1),
+				new User("user4", "user4", "p4", "user4@go.kr", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD),
 				new User("user5", "user5", "p5", "user5@go.kr", Level.GOLD, 100, 100)
 				);
 	}
@@ -81,6 +87,46 @@ public class UserServiceTest {
 			}
 			
 		}
+	}
+	
+	//== Mockito를 사용한 테스트 코드 ==//
+	@Test @DirtiesContext
+	public void mockUpgradeLevels() throws Exception {
+		UserServiceImpl userServiceImple = new UserServiceImpl();
+		
+		//mockito를 사용한 Mock 객체 생성 및 주입
+		UserDao mockUserDao = mock(UserDao.class);
+		when(mockUserDao.getAll()).thenReturn(this.users);
+		userServiceImpl.setUserDao(mockUserDao);
+		
+		MailSender mockMailSender = mock(MailSender.class);
+		userServiceImpl.setMailSender(mockMailSender);
+		
+		userServiceImpl.upgradeLevels();
+		
+		//mockUserDao의 update 메소드가 2번 실행되는지 검증, 인수로 User타입의 객체를 임의로(any)로 전달함
+		verify(mockUserDao, times(2)).update(any(User.class));
+		
+		//mockUserDao가 update 메소드를 실행할 때 인자로 users.get(1)를 인스턴스로 전달하는지 확인함
+		verify(mockUserDao).update(users.get(1));
+		assertEquals(users.get(1).getLevel(), Level.SILVER);
+		
+		//mockUserDao가 update 메소드를 실행할 때 인자로 users.get(3)를 인스턴스로 전달하는지 확인함
+		verify(mockUserDao).update(users.get(3));
+		assertEquals(users.get(3).getLevel(), Level.GOLD);
+		
+		//ArgumentCaptor 객체가 SimpleMailMessage 인스턴스를 저장할 수 있도록 설정함
+		ArgumentCaptor<SimpleMailMessage> mailMessageArg =
+				ArgumentCaptor.forClass(SimpleMailMessage.class);
+		
+		//mockMailSender의 send 메소드가 2번 실행되었는지, 
+		//send() 메소드가 실행될 때 SimpleMailMessage 객체가 전달되었는지 확인
+		verify(mockMailSender, times(2)).send(mailMessageArg.capture());
+		List<SimpleMailMessage> mailMessages = mailMessageArg.getAllValues();
+		
+		assertEquals(mailMessages.get(0).getTo()[0], users.get(1).getEmail());
+		assertEquals(mailMessages.get(1).getTo()[0], users.get(3).getEmail());
+		
 	}
 	
 	//== upgradeLevels() 테스트에 사용될 MailSender Mock 객체 ==//
