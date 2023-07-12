@@ -33,7 +33,7 @@ public class TransactionHandler implements InvocationHandler {
 		if (method.getName().startsWith(pattern)) {
 			return invokeInTransaction(method, args);
 		}
-		return method.invoke(method, args);
+		return method.invoke(target, args);
 	}
 	
 	//선별된 메소드에 트랜잭션 기능을 부가해주는 메소드

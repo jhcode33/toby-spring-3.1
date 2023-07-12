@@ -35,15 +35,17 @@ public class TestServiceFactory {
 	}
 	
 	@Bean
-	public UserService userService() {
-		UserServiceTx userServiceTx = new UserServiceTx();
-		userServiceTx.setTransactionManager(transactionManager());
-		userServiceTx.setUserService(userServiceImpl());
-		return userServiceTx;
+	public TxProxyFactoryBean userService() {
+		TxProxyFactoryBean txProxyFactorybean = new TxProxyFactoryBean();
+		txProxyFactorybean.setTarget(userServiceImpl());
+		txProxyFactorybean.setTransactionManager(transactionManager());
+		txProxyFactorybean.setPattern("upgradeLevels");
+		txProxyFactorybean.setServiceInterface(UserService.class);
+		return txProxyFactorybean;
 	}
 	
 	@Bean
-	public UserServiceImpl userServiceImpl() {
+	public UserService userServiceImpl() {
 		UserServiceImpl userServiceImpl = new UserServiceImpl();
 		userServiceImpl.setUserDao(userDao());
 		userServiceImpl.setMailSender(mailSender());

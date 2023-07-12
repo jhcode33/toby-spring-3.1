@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -54,6 +54,7 @@ public class UserServiceTest {
 	@Autowired private UserServiceImpl userServiceImpl;
 	@Autowired private PlatformTransactionManager transactionManager;
 	@Autowired private MailSender mailSender;
+	@Autowired private ApplicationContext context;
 	
 	List<User> users;
 	
@@ -236,25 +237,27 @@ public class UserServiceTest {
 	}
 	
 	//예외 발생 시 작업 취소 여부 테스트
-	@Test
+	@Test @DirtiesContext
 	public void upgradeAllorNothing() throws Exception {
 		UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(userDao);
 		testUserService.setMailSender(mailSender);
 		
-//		UserServiceTx txUserService = new UserServiceTx();
-//		txUserService.setTransactionManager(transactionManager);
-//		txUserService.setUserService(testUserService);
+//		TransactionHandler txHandler = new TransactionHandler();
+//		txHandler.setTarget(testUserService); 					//타겟 오브젝트 주입, 핵심 기능을 위임할 오브젝트
+//		txHandler.setTransactionManager(transactionManager);    //트랜잭션 기능에 필요한 객체 주입
+//		txHandler.setPattern("upgradeLevels"); 					//트랜잭션 기능을 부가할 메소드 이름
 		
-		TransactionHandler txHandler = new TransactionHandler();
-		txHandler.setTarget(testUserService); 					//타겟 오브젝트 주입, 핵심 기능을 위임할 오브젝트
-		txHandler.setTransactionManager(transactionManager);    //트랜잭션 기능에 필요한 객체 주입
-		txHandler.setPattern("upgradeLevels"); 					//트랜잭션 기능을 부가할 메소드 이름
+//		UserService txUserService = 
+//				(UserService)Proxy.newProxyInstance(getClass().getClassLoader(),     //현재 클래스의 로더를 가져옴
+//													new Class[] {UserService.class}, //프록시 객체가 구현해야할 인터페이스
+//													txHandler);						 //구현된 프록시 객체에 부가기능을 주고 위임할 invocation
 		
-		UserService txUserService = 
-				(UserService)Proxy.newProxyInstance(getClass().getClassLoader(),     //현재 클래스의 로더를 가져옴
-													new Class[] {UserService.class}, //프록시 객체가 구현해야할 인터페이스
-													txHandler);						 //구현된 프록시 객체에 부가기능을 주고 위임할 invocation
+		TxProxyFactoryBean txProxyFatoryBean = 
+				context.getBean("&userService", TxProxyFactoryBean.class);
+		
+		txProxyFatoryBean.setTarget(testUserService);
+		UserService txUserService = (UserService) txProxyFatoryBean.getObject();
 		
 		userDao.deleteAll();
 		
