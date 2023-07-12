@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -241,9 +242,19 @@ public class UserServiceTest {
 		testUserService.setUserDao(userDao);
 		testUserService.setMailSender(mailSender);
 		
-		UserServiceTx txUserService = new UserServiceTx();
-		txUserService.setTransactionManager(transactionManager);
-		txUserService.setUserService(testUserService);
+//		UserServiceTx txUserService = new UserServiceTx();
+//		txUserService.setTransactionManager(transactionManager);
+//		txUserService.setUserService(testUserService);
+		
+		TransactionHandler txHandler = new TransactionHandler();
+		txHandler.setTarget(testUserService); 					//타겟 오브젝트 주입, 핵심 기능을 위임할 오브젝트
+		txHandler.setTransactionManager(transactionManager);    //트랜잭션 기능에 필요한 객체 주입
+		txHandler.setPattern("upgradeLevels"); 					//트랜잭션 기능을 부가할 메소드 이름
+		
+		UserService txUserService = 
+				(UserService)Proxy.newProxyInstance(getClass().getClassLoader(),     //현재 클래스의 로더를 가져옴
+													new Class[] {UserService.class}, //프록시 객체가 구현해야할 인터페이스
+													txHandler);						 //구현된 프록시 객체에 부가기능을 주고 위임할 invocation
 		
 		userDao.deleteAll();
 		
