@@ -2,6 +2,9 @@ package com.jhcode.spring.ch6.user.service;
 
 import javax.sql.DataSource;
 
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -35,21 +38,10 @@ public class TestServiceFactory {
 	}
 	
 	@Bean
-	public TxProxyFactoryBean userService() {
-		TxProxyFactoryBean txProxyFactorybean = new TxProxyFactoryBean();
-		txProxyFactorybean.setTarget(userServiceImpl());
-		txProxyFactorybean.setTransactionManager(transactionManager());
-		txProxyFactorybean.setPattern("upgradeLevels");
-		txProxyFactorybean.setServiceInterface(UserService.class);
-		return txProxyFactorybean;
-	}
-	
-	@Bean
-	public UserService userServiceImpl() {
-		UserServiceImpl userServiceImpl = new UserServiceImpl();
-		userServiceImpl.setUserDao(userDao());
-		userServiceImpl.setMailSender(mailSender());
-		return userServiceImpl;
+	public DataSourceTransactionManager transactionManager() {
+		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+		dataSourceTransactionManager.setDataSource(dataSource());
+		return dataSourceTransactionManager;
 	}
 	
 	@Bean
@@ -59,9 +51,53 @@ public class TestServiceFactory {
 	}
 	
 	@Bean
-	public DataSourceTransactionManager transactionManager() {
-		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-		dataSourceTransactionManager.setDataSource(dataSource());
-		return dataSourceTransactionManager;
+	public TransactionAdvice transactionAdvice() {
+		TransactionAdvice advice = new TransactionAdvice();
+		advice.setTransactionManager(transactionManager());
+		return advice;
 	}
+	
+	@Bean
+	public NameMatchMethodPointcut transactionPointcut() {
+		NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+		pointcut.setMappedName("upgrade*");
+		return pointcut;
+	}
+	
+	@Bean
+	public DefaultPointcutAdvisor transactionAdvisor() {
+		DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
+		advisor.setAdvice(transactionAdvice());
+		advisor.setPointcut(transactionPointcut());
+		return advisor;
+	}
+	
+	@Bean
+	public ProxyFactoryBean userService() {
+		ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+		proxyFactoryBean.setTarget(userServiceImpl());
+		proxyFactoryBean.addAdvisor(transactionAdvisor());
+		//proxyFactoryBean.setInterceptorNames("transactionAdvisor");
+		return proxyFactoryBean;
+	}
+	
+//	@Bean
+//	public TxProxyFactoryBean userService() {
+//		TxProxyFactoryBean txProxyFactorybean = new TxProxyFactoryBean();
+//		txProxyFactorybean.setTarget(userServiceImpl());
+//		txProxyFactorybean.setTransactionManager(transactionManager());
+//		txProxyFactorybean.setPattern("upgradeLevels");
+//		txProxyFactorybean.setServiceInterface(UserService.class);
+//		return txProxyFactorybean;
+//	}
+	
+	@Bean
+	public UserService userServiceImpl() {
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
+		userServiceImpl.setUserDao(userDao());
+		userServiceImpl.setMailSender(mailSender());
+		return userServiceImpl;
+	}
+	
+	
 }

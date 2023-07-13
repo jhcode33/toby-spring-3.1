@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -253,8 +254,8 @@ public class UserServiceTest {
 //													new Class[] {UserService.class}, //프록시 객체가 구현해야할 인터페이스
 //													txHandler);						 //구현된 프록시 객체에 부가기능을 주고 위임할 invocation
 		
-		TxProxyFactoryBean txProxyFatoryBean = 
-				context.getBean("&userService", TxProxyFactoryBean.class);
+		ProxyFactoryBean txProxyFatoryBean = 
+				context.getBean("&userService", ProxyFactoryBean.class);
 		
 		txProxyFatoryBean.setTarget(testUserService);
 		UserService txUserService = (UserService) txProxyFatoryBean.getObject();
