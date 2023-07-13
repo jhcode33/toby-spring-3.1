@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.lang.reflect.Proxy;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
@@ -86,5 +88,62 @@ public class DynamicProxyTest {
 		//pointcut으로 sayH* 를 적용했기 때문에 sayThankYou 메소드에는 부가 기능이 적용되지 않음
 		assertEquals(proxiedHello.sayThankYou("Toby"), "Thank You Toby"); 
 		
+	}
+	
+	@Test
+	public void classNamePointcutAdvisor() {
+		//클래스를 선정하는 알고리즘
+		NameMatchMethodPointcut classMethodPointcut = new NameMatchMethodPointcut() {
+			public ClassFilter getClassFilter() {
+				return new ClassFilter() {
+					public boolean matches(Class<?> clazz) {
+						return clazz.getSimpleName().startsWith("HelloT");
+					}
+				};
+			}
+		};
+		
+		NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut() {
+			public ClassFilter getClassFilter() {
+				return ((clazz) -> clazz.getSimpleName().startsWith("HelloT"));
+			}
+		};
+		
+		//메소드를 선정하는 알고리즘
+		classMethodPointcut.setMappedName("sayH*");
+		
+		//advisor 적용
+		checkAdviced(new HelloTarget(), classMethodPointcut, true);
+		
+		//advisor 적용 x
+		class HelloWorld extends HelloTarget {};
+		checkAdviced(new HelloWorld(), classMethodPointcut, false);
+		
+		//advisor 적용
+		class HelloToby extends HelloTarget {};
+		checkAdviced(new HelloToby(), classMethodPointcut, true);
+		
+	
+	}
+	
+	private void checkAdviced(Object target, Pointcut pointcut, boolean adviced) {
+		ProxyFactoryBean pfBean = new ProxyFactoryBean();
+		pfBean.setTarget(target);
+		pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+		
+		//Proxy 객체 준비
+		Hello proxiedHello = (Hello) pfBean.getObject();
+	
+		// advisor 적용 대상
+		if (adviced) {
+			assertEquals(proxiedHello.sayHello("Toby"), "HELLO TOBY");
+			assertEquals(proxiedHello.sayHi("Toby"), "HI TOBY");
+			assertEquals(proxiedHello.sayThankYou("Toby"), "Thank You Toby");
+		
+		} else {
+			assertEquals(proxiedHello.sayHello("Toby"), "Hello Toby");
+			assertEquals(proxiedHello.sayHi("Toby"), "Hi Toby");
+			assertEquals(proxiedHello.sayThankYou("Toby"), "Thank You Toby");
+		}
 	}
 }
