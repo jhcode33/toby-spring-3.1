@@ -2,16 +2,12 @@ package com.jhcode.spring.ch6.user.service;
 
 import com.jhcode.spring.ch6.user.domain.User;
 
-public class TestUserService extends UserServiceImpl {
+public class TestUserServiceImpl extends UserServiceImpl {
 	
-	private String id;
+	private String id = "user4";
 	
 	//예외를 내부 클래스로 선언하여 사용한다
 	static class TestUserServiceException extends RuntimeException{};
-	
-	public TestUserService(String id) {
-		this.id = id;
-	}
 
 	@Override
 	protected void upgradeLevel(User user) {

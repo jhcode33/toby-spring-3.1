@@ -3,6 +3,7 @@ package com.jhcode.spring.ch6.user.service;
 import static com.jhcode.spring.ch6.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static com.jhcode.spring.ch6.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -30,9 +31,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -44,7 +44,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.jhcode.spring.ch6.user.dao.UserDao;
 import com.jhcode.spring.ch6.user.domain.Level;
 import com.jhcode.spring.ch6.user.domain.User;
-import com.jhcode.spring.ch6.user.service.TestUserService.TestUserServiceException;
+import com.jhcode.spring.ch6.user.service.TestUserServiceImpl.TestUserServiceException;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestServiceFactory.class})
@@ -52,10 +52,11 @@ public class UserServiceTest {
 	
 	@Autowired private UserDao userDao;
 	@Autowired private UserService userService;
-	@Autowired private UserServiceImpl userServiceImpl;
+	@Autowired @Qualifier("testUserService") 
+	private UserService testUserService;
+	
 	@Autowired private PlatformTransactionManager transactionManager;
 	@Autowired private MailSender mailSender;
-	@Autowired private ApplicationContext context;
 	
 	List<User> users;
 	
@@ -95,7 +96,7 @@ public class UserServiceTest {
 	//== Mockito를 사용한 테스트 코드 ==//
 	@Test @DirtiesContext
 	public void mockUpgradeLevels() throws Exception {
-		UserServiceImpl userServiceImple = new UserServiceImpl();
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
 		
 		//mockito를 사용한 Mock 객체 생성 및 주입
 		UserDao mockUserDao = mock(UserDao.class);
@@ -240,34 +241,14 @@ public class UserServiceTest {
 	//예외 발생 시 작업 취소 여부 테스트
 	@Test @DirtiesContext
 	public void upgradeAllorNothing() throws Exception {
-		UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
-		testUserService.setUserDao(userDao);
-		testUserService.setMailSender(mailSender);
-		
-//		TransactionHandler txHandler = new TransactionHandler();
-//		txHandler.setTarget(testUserService); 					//타겟 오브젝트 주입, 핵심 기능을 위임할 오브젝트
-//		txHandler.setTransactionManager(transactionManager);    //트랜잭션 기능에 필요한 객체 주입
-//		txHandler.setPattern("upgradeLevels"); 					//트랜잭션 기능을 부가할 메소드 이름
-		
-//		UserService txUserService = 
-//				(UserService)Proxy.newProxyInstance(getClass().getClassLoader(),     //현재 클래스의 로더를 가져옴
-//													new Class[] {UserService.class}, //프록시 객체가 구현해야할 인터페이스
-//													txHandler);						 //구현된 프록시 객체에 부가기능을 주고 위임할 invocation
-		
-		ProxyFactoryBean txProxyFatoryBean = 
-				context.getBean("&userService", ProxyFactoryBean.class);
-		
-		txProxyFatoryBean.setTarget(testUserService);
-		UserService txUserService = (UserService) txProxyFatoryBean.getObject();
-		
 		userDao.deleteAll();
 		
 		for (User user : users) {
-			testUserService.add(user);
+			this.testUserService.add(user);
 		}
 		
 		try {
-			txUserService.upgradeLevels();
+			this.testUserService.upgradeLevels();
 			//테스트가 제대로 동작하게 하기 위한 안전장치, 로직을 잘못짜서 upgradeLevels() 메소드가 통과되도 무조건 실패함.
 			//fail("TestUserServiceException expected");
 		} catch (TestUserServiceException e) {
@@ -275,6 +256,13 @@ public class UserServiceTest {
 		} finally {
 			checkLevel(users.get(1), false);
 		}
+	}
+	
+	@Test
+	public void advisorAutoProxyCreator() {
+		//주입받는 객체가 proxy 객체인지 검증
+		assertTrue(userService instanceof java.lang.reflect.Proxy);
+		assertTrue(testUserService instanceof java.lang.reflect.Proxy);
 	}
 	
 	//@Test

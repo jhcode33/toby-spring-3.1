@@ -2,9 +2,10 @@ package com.jhcode.spring.ch6.user.service;
 
 import javax.sql.DataSource;
 
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -59,37 +60,44 @@ public class TestServiceFactory {
 	
 	@Bean
 	public NameMatchMethodPointcut transactionPointcut() {
+//		NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
+//		//pointcut.setMappedClassName("*Service");
+//		pointcut.setMappedName("upgrade*");
+		
 		NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
 		pointcut.setMappedName("upgrade*");
 		return pointcut;
 	}
 	
 	@Bean
+	public NameMatchClassMethodPointcut transactionClassPointcut() {
+		NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
+		pointcut.setMappedClassName("*ServiceImpl");
+		pointcut.setMappedName("upgrade*");
+		return pointcut;
+		
+	}
+	
+	@Bean
 	public DefaultPointcutAdvisor transactionAdvisor() {
 		DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
 		advisor.setAdvice(transactionAdvice());
-		advisor.setPointcut(transactionPointcut());
+		advisor.setPointcut(transactionClassPointcut());
 		return advisor;
 	}
 	
 	@Bean
-	public ProxyFactoryBean userService() {
-		ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-		proxyFactoryBean.setTarget(userServiceImpl());
-		proxyFactoryBean.addAdvisor(transactionAdvisor());
-		//proxyFactoryBean.setInterceptorNames("transactionAdvisor");
-		return proxyFactoryBean;
+	public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
+		return new DefaultAdvisorAutoProxyCreator();
 	}
 	
-//	@Bean
-//	public TxProxyFactoryBean userService() {
-//		TxProxyFactoryBean txProxyFactorybean = new TxProxyFactoryBean();
-//		txProxyFactorybean.setTarget(userServiceImpl());
-//		txProxyFactorybean.setTransactionManager(transactionManager());
-//		txProxyFactorybean.setPattern("upgradeLevels");
-//		txProxyFactorybean.setServiceInterface(UserService.class);
-//		return txProxyFactorybean;
-//	}
+	@Bean
+	public UserService userService() {
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
+		userServiceImpl.setUserDao(userDao());
+		userServiceImpl.setMailSender(mailSender());
+		return userServiceImpl;
+	}
 	
 	@Bean
 	public UserService userServiceImpl() {
@@ -99,5 +107,22 @@ public class TestServiceFactory {
 		return userServiceImpl;
 	}
 	
+	@Bean
+	public UserService testUserService() {
+		TestUserServiceImpl testuserServiceImpl = new TestUserServiceImpl();
+		testuserServiceImpl.setUserDao(userDao());
+		testuserServiceImpl.setMailSender(mailSender());
+		return testuserServiceImpl;
+	}
+	
+	//==  UserServiceTest 클래스 내의 static 클래스로 정의되었다면 아래와 같이 정의해야 한다 ==//
+//	@Bean
+//	@Qualifier("testUserService")
+//	public UserServiceImpl testUserService() {
+//	    UserServiceImpl testUserServiceImpl = new UserServiceTest.TestUserServiceImpl();
+//	    testUserServiceImpl.setUserDao(userDao());
+//	    testUserServiceImpl.setMailSender(mailSender());
+//	    return testUserServiceImpl;
+//	}
 	
 }
