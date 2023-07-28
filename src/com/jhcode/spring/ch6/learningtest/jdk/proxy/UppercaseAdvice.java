@@ -3,6 +3,7 @@ package com.jhcode.spring.ch6.learningtest.jdk.proxy;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+//템플릿
 public class UppercaseAdvice implements MethodInterceptor {
 
 	@Override

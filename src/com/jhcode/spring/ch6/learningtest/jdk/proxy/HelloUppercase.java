@@ -1,8 +1,9 @@
 package com.jhcode.spring.ch6.learningtest.jdk.proxy;
 
+//프록시 객체
 public class HelloUppercase implements Hello {
 	
-	//다른 프록시로 접근할 수도 있기 때문에 인터페이스 타입으로 받는다
+	//타겟 객체를 필드로 가지고 있다 = HelloTarget
 	Hello hello;
 	
 	public HelloUppercase(Hello hello) {
@@ -13,6 +14,8 @@ public class HelloUppercase implements Hello {
 	@Override
 	public String sayHello(String name) {
 		//기존의 기능에 새로운 기능을 추가해서 위임한다
+		// toUppercase() 라는 부가기능을 추가해주고
+		// 타겟의 메소드를 호출하는 역할
 		return hello.sayHello(name).toUpperCase();
 	}
 

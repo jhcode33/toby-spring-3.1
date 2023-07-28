@@ -1,7 +1,8 @@
 package com.jhcode.spring.ch6.learningtest.jdk.proxy;
 
 public class HelloTarget implements Hello {
-
+	
+	//타겟 : 핵심 기능을 가지고 있는 객체
 	@Override
 	public String sayHello(String name) {
 		return "Hello " + name;
