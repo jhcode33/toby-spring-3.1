@@ -3,7 +3,6 @@ package com.jhcode.spring.ch7.user.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,20 +13,23 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.jhcode.spring.ch6.user.domain.Level;
-import com.jhcode.spring.ch6.user.domain.User;
+import com.jhcode.spring.ch7.user.domain.Level;
+import com.jhcode.spring.ch7.user.domain.User;
+import com.jhcode.spring.ch7.user.slqservice.SqlService;
 
 public class UserDaoJdbc implements UserDao {
 	
 	private JdbcTemplate jdbcTemplate;
-	private Map<String, String> sqlMap;
+	
+	// SqlService 타입으로 주입
+	private SqlService sqlService;
 	
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-	public void setSqlMap(Map<String, String> sqlMap) {
-		this.sqlMap = sqlMap;
+	public void setSqlService(SqlService sqlService) {
+		this.sqlService = sqlService;
 	}
 	
 	private RowMapper<User> userMapper = 
@@ -48,7 +50,7 @@ public class UserDaoJdbc implements UserDao {
 	@Override
 	public void add(User user) {
 		this.jdbcTemplate.update(
-				this.sqlMap.get("add"),
+				this.sqlService.getSql("add"),
 				user.getId(), user.getName(), user.getPassword(), user.getEmail(), 
 				user.getLevel().intValue(), user.getLogin(), user.getRecommend());
 	}
@@ -56,7 +58,7 @@ public class UserDaoJdbc implements UserDao {
 	@Override
 	public Optional<User> get(String id) {
 	    try (Stream<User> stream = 
-	    		jdbcTemplate.queryForStream(this.sqlMap.get("get"), this.userMapper, id)) {
+	    		jdbcTemplate.queryForStream(this.sqlService.getSql("get"), this.userMapper, id)) {
 	        return stream.findFirst();
 	    } catch (DataAccessException e) {
 	        return Optional.empty();
@@ -65,19 +67,19 @@ public class UserDaoJdbc implements UserDao {
 	
 	@Override
 	public void deleteAll() {
-		this.jdbcTemplate.update(this.sqlMap.get("deleteAll"));
+		this.jdbcTemplate.update(this.sqlService.getSql("deleteAll"));
 	}
 	
 	@Override
 	public int getCount() {
-		List<Integer> result = jdbcTemplate.query(this.sqlMap.get("getCount"), 
+		List<Integer> result = jdbcTemplate.query(this.sqlService.getSql("getCount"), 
 	    		(rs, rowNum) -> rs.getInt(1));
 	    return (int) DataAccessUtils.singleResult(result);
 	}
 
 	@Override
 	public List<User> getAll() {
-		return this.jdbcTemplate.query(this.sqlMap.get("getAll"),
+		return this.jdbcTemplate.query(this.sqlService.getSql("getAll"),
 				this.userMapper
 		);
 	}	
@@ -85,7 +87,7 @@ public class UserDaoJdbc implements UserDao {
 	@Override
 	public void update(User user) {
 		this.jdbcTemplate.update(
-				this.sqlMap.get("update"),
+				this.sqlService.getSql("update"),
 				user.getName(), user.getPassword(), user.getEmail(), 
 				user.getLevel().intValue(), user.getLogin(), user.getRecommend(),
 				user.getId());	

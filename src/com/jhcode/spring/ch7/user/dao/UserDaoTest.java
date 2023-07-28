@@ -21,8 +21,9 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.jhcode.spring.ch6.user.domain.Level;
-import com.jhcode.spring.ch6.user.domain.User;
+import com.jhcode.spring.ch7.user.domain.Level;
+import com.jhcode.spring.ch7.user.domain.User;
+
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestDaoFactory.class})

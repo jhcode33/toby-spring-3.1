@@ -3,7 +3,7 @@ package com.jhcode.spring.ch7.user.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.jhcode.spring.ch6.user.domain.User;
+import com.jhcode.spring.ch7.user.domain.User;
 
 public interface UserDao {
 	void add(User user);

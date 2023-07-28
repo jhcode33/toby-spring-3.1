@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+import com.jhcode.spring.ch7.user.slqservice.SimpleSqlService;
+import com.jhcode.spring.ch7.user.slqservice.SqlService;
+
 @Configuration
 public class TestDaoFactory {
 	
@@ -29,21 +32,25 @@ public class TestDaoFactory {
 	public UserDaoJdbc userDao() {
 		UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
 		userDaoJdbc.setDataSource(dataSource());
-		userDaoJdbc.setSqlMap(sqlMap()); //sqlMap Bean 객체 주입
+		userDaoJdbc.setSqlService(sqlService()); // Map이 아닌 SqlService 주입
 		return userDaoJdbc;
 	}
 	
-	//== xml 방식이 아닌 java-configuration 방식을 사용 ==//
+	//== 여전히 SQL을 스프링 Bean에서 설정하지만 UserDao는 SQL이 어디에서 오는 건지 모르게 된다 ==//
 	@Bean
-    public Map<String, String> sqlMap() {
-        Map<String, String> sqlMap = new HashMap<>();
+    public SqlService sqlService() {
+        SimpleSqlService sqlService = new SimpleSqlService();
+		
+		Map<String, String> sqlMap = new HashMap<>();
         sqlMap.put("add", "insert into users(id, name, password, email, level, login, recommend) values(?,?,?,?,?,?,?)");
         sqlMap.put("get", "select * from users where id = ?");
         sqlMap.put("getAll", "select * from users order by id");
         sqlMap.put("deleteAll", "delete from users");
         sqlMap.put("getCount", "select count(*) from users");
         sqlMap.put("update", "update users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?");
-        return sqlMap;
+        
+        sqlService.setSqlMap(sqlMap);
+        return sqlService;
     }
 }
 
