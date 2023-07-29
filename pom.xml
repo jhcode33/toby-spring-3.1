@@ -81,6 +81,13 @@
 	    <version>2.3.1</version>
 	</dependency>
 	
+	<!-- JAXB API ContextFactory -->
+	<dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>2.3.1</version>
+    </dependency>
+	
 	<!-- For @EnableTransactionManagement!!! -->
   	<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
 	<dependency>
