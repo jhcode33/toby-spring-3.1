@@ -2,6 +2,8 @@ package com.jhcode.spring.ch7.user.slqservice;
 
 import java.util.Map;
 
+import com.jhcode.spring.ch7.user.slqservice.exception.SqlRetrievalFailureException;
+
 public class SimpleSqlService implements SqlService {
 	
 	private Map<String, String> sqlMap;

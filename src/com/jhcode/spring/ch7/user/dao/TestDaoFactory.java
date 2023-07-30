@@ -36,6 +36,8 @@ public class TestDaoFactory {
 	@Bean
 	public SqlService sqlService() {
 		XmlSqlService xmlSqlService = new XmlSqlService();
+		xmlSqlService.setSqlReader(xmlSqlService);
+		xmlSqlService.setSqlRegistry(xmlSqlService);
 		xmlSqlService.setSqlmapFile("sqlmap.xml");
 		return xmlSqlService;
 	}

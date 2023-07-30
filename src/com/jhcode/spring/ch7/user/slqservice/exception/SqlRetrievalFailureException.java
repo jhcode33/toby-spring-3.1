@@ -1,8 +1,16 @@
-package com.jhcode.spring.ch7.user.slqservice;
+package com.jhcode.spring.ch7.user.slqservice.exception;
 
 public class SqlRetrievalFailureException extends RuntimeException {
+	public SqlRetrievalFailureException() {
+		super();
+	}
+
 	public SqlRetrievalFailureException(String message) {
 		super(message);
+	}
+
+	public SqlRetrievalFailureException(Throwable cause) {
+		super(cause);
 	}
 
 	public SqlRetrievalFailureException(String message, Throwable cause) {

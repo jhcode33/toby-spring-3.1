@@ -10,22 +10,61 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import com.jhcode.spring.ch7.user.dao.UserDao;
+import com.jhcode.spring.ch7.user.slqservice.exception.SqlNotFoundException;
+import com.jhcode.spring.ch7.user.slqservice.exception.SqlRetrievalFailureException;
 import com.jhcode.spring.ch7.user.slqservice.jaxb.SqlType;
 import com.jhcode.spring.ch7.user.slqservice.jaxb.Sqlmap;
 
-public class XmlSqlService implements SqlService {
-	// 읽어온 SQL을 저장해 둘 객체
+public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
+	//== SqlService 구현부 ==//
+	private SqlReader sqlReader;
+	private SqlRegistry sqlRegistry;
+	
+	public void setSqlReader(SqlReader sqlReader) {
+		this.sqlReader = sqlReader;
+	}
+	
+	public void setSqlRegistry(SqlRegistry sqlRegistry) {
+		this.sqlRegistry = sqlRegistry;
+	}
+	
+	
+	@Override
+	public String getSql(String key) throws SqlRetrievalFailureException {
+		
+		try {
+			return this.sqlRegistry.findSql(key);
+		} catch (SqlNotFoundException e) {
+			throw new SqlRetrievalFailureException(e);
+		}
+	}
+	
+	//== SqlRegistry 구현부 ==//
 	private Map<String, String> sqlMap = new HashMap<String, String>();
 	
+	@Override
+	public String findSql(String key) throws SqlNotFoundException {
+		String sql = sqlMap.get(key);
+		
+		if (sql == null) 
+			throw new SqlNotFoundException(key + "에 대한 SQL을 찾을 수 없습니다.");
+		else return sql;
+	}
+	
+	@Override
+	public void registerSql(String key, String sql) {
+		sqlMap.put(key, sql);
+	}
+
+	//== SqlReader 구현부 ==//
 	private String sqlmapFile;
 	
 	public void setSqlmapFile(String sqlmapFile) {
 		this.sqlmapFile = sqlmapFile;
 	}
 	
-	// 생성자 대신 초기화에 사용할 메소드
-	@PostConstruct
-	public void loadSql() {
+	@Override
+	public void read(SqlRegistry sqlRegistry) {
 		String contextPath = Sqlmap.class.getPackage().getName();
 
 		try {
@@ -35,21 +74,18 @@ public class XmlSqlService implements SqlService {
 			Sqlmap sqlmap = (Sqlmap)unmarshaller.unmarshal(is);
 			
 			for (SqlType sql : sqlmap.getSql()) {
-				sqlMap.put(sql.getKey(), sql.getValue());
+				sqlRegistry.registerSql(sql.getKey(), sql.getValue());
 			}
 			
 		} catch (JAXBException e) {
-			// JAXB는 복구 불가능한 예외로 Reuntime 예외로 포장해서 던진다
 			throw new RuntimeException(e);
 		}
 	}
 	
-	@Override
-	public String getSql(String key) throws SqlRetrievalFailureException {
-		String sql = sqlMap.get(key);
-		if (sql == null)
-			throw new SqlRetrievalFailureException(key + "를 찾을 수 없습니다.");
-		else 
-			return sql;
+	//== XmlSqlService 구현 방법에 따른 초기화 메소드 ==//
+	@PostConstruct
+	public void loadSql() {
+		this.sqlReader.read(this.sqlRegistry);
 	}
+	
 }
