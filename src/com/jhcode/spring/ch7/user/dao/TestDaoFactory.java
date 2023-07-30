@@ -1,16 +1,13 @@
 package com.jhcode.spring.ch7.user.dao;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-import com.jhcode.spring.ch7.user.slqservice.SimpleSqlService;
 import com.jhcode.spring.ch7.user.slqservice.SqlService;
+import com.jhcode.spring.ch7.user.slqservice.XmlSqlService;
 
 @Configuration
 public class TestDaoFactory {
@@ -36,22 +33,12 @@ public class TestDaoFactory {
 		return userDaoJdbc;
 	}
 	
-	//== 여전히 SQL을 스프링 Bean에서 설정하지만 UserDao는 SQL이 어디에서 오는 건지 모르게 된다 ==//
 	@Bean
-    public SqlService sqlService() {
-        SimpleSqlService sqlService = new SimpleSqlService();
-		
-		Map<String, String> sqlMap = new HashMap<>();
-        sqlMap.put("add", "insert into users(id, name, password, email, level, login, recommend) values(?,?,?,?,?,?,?)");
-        sqlMap.put("get", "select * from users where id = ?");
-        sqlMap.put("getAll", "select * from users order by id");
-        sqlMap.put("deleteAll", "delete from users");
-        sqlMap.put("getCount", "select count(*) from users");
-        sqlMap.put("update", "update users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?");
-        
-        sqlService.setSqlMap(sqlMap);
-        return sqlService;
-    }
+	public SqlService sqlService() {
+		XmlSqlService xmlSqlService = new XmlSqlService();
+		xmlSqlService.setSqlmapFile("sqlmap.xml");
+		return xmlSqlService;
+	}
 }
 
 

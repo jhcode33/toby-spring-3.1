@@ -88,6 +88,13 @@
         <version>2.3.1</version>
     </dependency>
 	
+	<!-- For @PostConstruct annotation!!!-->
+	<dependency>
+	    <groupId>jakarta.annotation</groupId>
+	    <artifactId>jakarta.annotation-api</artifactId>
+	    <version>1.3.5</version>
+	</dependency>
+	
 	<!-- For @EnableTransactionManagement!!! -->
   	<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
 	<dependency>
@@ -96,12 +103,6 @@
 	    <version>5.3.20</version>
 	</dependency>
 	
-	<!-- For @PostConstruct annotation!!!-->
-	<dependency>
-	    <groupId>jakarta.annotation</groupId>
-	    <artifactId>jakarta.annotation-api</artifactId>
-	    <version>1.3.5</version>
-	</dependency>
     
   </dependencies>
   <build>

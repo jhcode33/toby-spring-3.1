@@ -50,7 +50,7 @@ public class UserDaoJdbc implements UserDao {
 	@Override
 	public void add(User user) {
 		this.jdbcTemplate.update(
-				this.sqlService.getSql("add"),
+				this.sqlService.getSql("userAdd"),
 				user.getId(), user.getName(), user.getPassword(), user.getEmail(), 
 				user.getLevel().intValue(), user.getLogin(), user.getRecommend());
 	}
@@ -58,7 +58,7 @@ public class UserDaoJdbc implements UserDao {
 	@Override
 	public Optional<User> get(String id) {
 	    try (Stream<User> stream = 
-	    		jdbcTemplate.queryForStream(this.sqlService.getSql("get"), this.userMapper, id)) {
+	    		jdbcTemplate.queryForStream(this.sqlService.getSql("userGet"), this.userMapper, id)) {
 	        return stream.findFirst();
 	    } catch (DataAccessException e) {
 	        return Optional.empty();
@@ -67,19 +67,19 @@ public class UserDaoJdbc implements UserDao {
 	
 	@Override
 	public void deleteAll() {
-		this.jdbcTemplate.update(this.sqlService.getSql("deleteAll"));
+		this.jdbcTemplate.update(this.sqlService.getSql("userDeleteAll"));
 	}
 	
 	@Override
 	public int getCount() {
-		List<Integer> result = jdbcTemplate.query(this.sqlService.getSql("getCount"), 
+		List<Integer> result = jdbcTemplate.query(this.sqlService.getSql("userGetCount"), 
 	    		(rs, rowNum) -> rs.getInt(1));
 	    return (int) DataAccessUtils.singleResult(result);
 	}
 
 	@Override
 	public List<User> getAll() {
-		return this.jdbcTemplate.query(this.sqlService.getSql("getAll"),
+		return this.jdbcTemplate.query(this.sqlService.getSql("userGetAll"),
 				this.userMapper
 		);
 	}	
@@ -87,7 +87,7 @@ public class UserDaoJdbc implements UserDao {
 	@Override
 	public void update(User user) {
 		this.jdbcTemplate.update(
-				this.sqlService.getSql("update"),
+				this.sqlService.getSql("userUpdate"),
 				user.getName(), user.getPassword(), user.getEmail(), 
 				user.getLevel().intValue(), user.getLogin(), user.getRecommend(),
 				user.getId());	
