@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+import com.jhcode.spring.ch7.user.slqservice.DefaultSqlService;
 import com.jhcode.spring.ch7.user.slqservice.SqlService;
-import com.jhcode.spring.ch7.user.slqservice.XmlSqlService;
 
 @Configuration
 public class TestDaoFactory {
@@ -29,17 +29,14 @@ public class TestDaoFactory {
 	public UserDaoJdbc userDao() {
 		UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
 		userDaoJdbc.setDataSource(dataSource());
-		userDaoJdbc.setSqlService(sqlService()); // Map이 아닌 SqlService 주입
+		userDaoJdbc.setSqlService(sqlService());
 		return userDaoJdbc;
 	}
 	
 	@Bean
 	public SqlService sqlService() {
-		XmlSqlService xmlSqlService = new XmlSqlService();
-		xmlSqlService.setSqlReader(xmlSqlService);
-		xmlSqlService.setSqlRegistry(xmlSqlService);
-		xmlSqlService.setSqlmapFile("sqlmap.xml");
-		return xmlSqlService;
+		DefaultSqlService sqlService = new DefaultSqlService();
+		return sqlService;
 	}
 }
 
