@@ -5,8 +5,10 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import com.jhcode.spring.ch7.user.slqservice.DefaultSqlService;
+import com.jhcode.spring.ch7.user.slqservice.OxmSqlService;
 import com.jhcode.spring.ch7.user.slqservice.SqlService;
 
 @Configuration
@@ -34,9 +36,17 @@ public class TestDaoFactory {
 	}
 	
 	@Bean
-	public SqlService sqlService() {
-		DefaultSqlService sqlService = new DefaultSqlService();
-		return sqlService;
+	public OxmSqlService sqlService() {
+		OxmSqlService oxmSqlService = new OxmSqlService();
+		oxmSqlService.setUnmarshaller(unmarshaller());
+		return oxmSqlService;
+	}
+	
+	@Bean
+	public Jaxb2Marshaller unmarshaller() {
+		Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+		jaxb2Marshaller.setContextPath("com.jhcode.spring.ch7.user.slqservice.jaxb");
+		return jaxb2Marshaller;
 	}
 }
 
