@@ -14,6 +14,9 @@ import vol1.jhcode.ch7.user.slqservice.jaxb.SqlType;
 import vol1.jhcode.ch7.user.slqservice.jaxb.Sqlmap;
 
 public class OxmSqlService implements SqlService {
+	// SqlService 로직을 위임할 객체
+	private final BaseSqlService baseSqlService = new BaseSqlService();
+	
 	// final로 변경 불가능하며, 두 개의 클래스는 강하게 결합되어 있다
 	private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
 	
@@ -36,16 +39,17 @@ public class OxmSqlService implements SqlService {
 	//== SqlService의 구현 코드 ==//
 	@PostConstruct
 	public void loadSql() {
-		this.oxmSqlReader.read(this.sqlRegistry);
+		// 실제 작업을 위임할 대상에게 주입
+		this.baseSqlService.setSqlReader(this.oxmSqlReader);
+		this.baseSqlService.setSqlRegistry(this.sqlRegistry);
+		
+		// 초기화 작업 위임
+		this.baseSqlService.loadSql();
 	}
 	
 	@Override
 	public String getSql(String key) throws SqlRetrievalFailureException {
-		try {
-			return this.sqlRegistry.findSql(key);
-		} catch (Exception e) {
-			throw new SqlRetrievalFailureException(e);
-		}
+		return this.baseSqlService.getSql(key);
 	}
 	
 	//== 내부 클래스 ==//
