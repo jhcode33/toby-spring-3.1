@@ -9,6 +9,7 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import vol1.jhcode.ch7.user.slqservice.OxmSqlService;
+import vol1.jhcode.ch7.user.slqservice.updatable.ConcurrentHashMapSqlRegistry;
 
 @Configuration
 public class TestDaoFactory {
@@ -40,6 +41,7 @@ public class TestDaoFactory {
 		oxmSqlService.setSqlmap(new ClassPathResource
 				("/vol1/jhcode/ch7/user/dao/sqlmap.xml", UserDao.class));
 		oxmSqlService.setUnmarshaller(unmarshaller());
+		oxmSqlService.setSqlRegistry(sqlRegistry());
 		return oxmSqlService;
 	}
 	
@@ -48,6 +50,11 @@ public class TestDaoFactory {
 		Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
 		jaxb2Marshaller.setContextPath("vol1.jhcode.ch7.user.slqservice.jaxb");
 		return jaxb2Marshaller;
+	}
+	
+	@Bean
+	public ConcurrentHashMapSqlRegistry sqlRegistry() {
+		return new ConcurrentHashMapSqlRegistry();
 	}
 }
 

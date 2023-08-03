@@ -1,6 +1,6 @@
 package vol1.jhcode.ch7.user.slqservice.exception;
 
-public class SqlNotFoundException extends Exception {
+public class SqlNotFoundException extends RuntimeException {
 	public SqlNotFoundException() {
 		super();
 	}
