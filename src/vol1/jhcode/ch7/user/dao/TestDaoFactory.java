@@ -4,12 +4,11 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import vol1.jhcode.ch7.user.slqservice.DefaultSqlService;
 import vol1.jhcode.ch7.user.slqservice.OxmSqlService;
-import vol1.jhcode.ch7.user.slqservice.SqlService;
 
 @Configuration
 public class TestDaoFactory {
@@ -38,6 +37,8 @@ public class TestDaoFactory {
 	@Bean
 	public OxmSqlService sqlService() {
 		OxmSqlService oxmSqlService = new OxmSqlService();
+		oxmSqlService.setSqlmap(new ClassPathResource
+				("/vol1/jhcode/ch7/user/dao/sqlmap.xml", UserDao.class));
 		oxmSqlService.setUnmarshaller(unmarshaller());
 		return oxmSqlService;
 	}
@@ -45,7 +46,7 @@ public class TestDaoFactory {
 	@Bean
 	public Jaxb2Marshaller unmarshaller() {
 		Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-		jaxb2Marshaller.setContextPath("com.jhcode.spring.ch7.user.slqservice.jaxb");
+		jaxb2Marshaller.setContextPath("vol1.jhcode.ch7.user.slqservice.jaxb");
 		return jaxb2Marshaller;
 	}
 }
