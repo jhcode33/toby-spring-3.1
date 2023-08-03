@@ -3,11 +3,11 @@ package vol1.kitec.ch7.study4.springframe.sqlservice;
 import java.io.IOException;
 
 import javax.annotation.PostConstruct;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.springframework.core.io.Resource;
+import org.springframework.oxm.Unmarshaller;
 
 import vol1.kitec.ch7.study4.springframe.sqlservice.jaxb.SqlType;
 import vol1.kitec.ch7.study4.springframe.sqlservice.jaxb.Sqlmap;
