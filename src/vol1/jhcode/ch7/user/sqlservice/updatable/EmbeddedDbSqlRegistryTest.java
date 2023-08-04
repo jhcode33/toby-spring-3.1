@@ -16,13 +16,13 @@ import vol1.jhcode.ch7.user.sqlservice.exception.SqlUpdateFailureException;
 
 public class EmbeddedDbSqlRegistryTest extends AbstractUpdatableSqlRegistryTest {
 
-EmbeddedDatabase db;
+	EmbeddedDatabase db;
 	
 	@Override
 	protected UpdatableSqlRegistry createUpdatableSqlRegistry() {
 		db = new EmbeddedDatabaseBuilder()
 			.setType(H2)
-			.addScript("classpath:vol1/jhcode/ch7/user/sqlservice/updatable/sqlRegistrySchema.sql")
+			.addScript("classpath:/vol1/jhcode/ch7/user/sqlservice/updatable/sqlRegistrySchema.sql")
 			.build();
 		
 		EmbeddedDbSqlRegistry embeddedDbSqlRegistry = new EmbeddedDbSqlRegistry();

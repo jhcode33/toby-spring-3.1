@@ -1,5 +1,6 @@
 package vol1.jhcode.ch7.user.sqlservice.updatable;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -27,12 +28,21 @@ public class EmbeddedDbSqlRegistry implements UpdatableSqlRegistry {
 	}
 	
 	public void registerSql(String key, String sql) {
-		jdbc.update("insert into sqlmap(key_, sql_) values(?,?)", key, sql);
+		jdbc.update("insert into sqlmap(key_ , sql_) values(?,?)", key, sql);
 	}
 
 	public String findSql(String key) throws SqlNotFoundException {
 		try {
-			return jdbc.queryForObject("select sql_ from sqlmap where key_ = ?", String.class, key);
+			String sql = "select sql_ from sqlmap where key_ = ?";
+			List<String> sqlList = jdbc.query(sql, new Object[]{key}, 
+					(resultSet, rowNum) -> resultSet.getString("sql_"));
+
+			String sqlValue = null;
+			if (!sqlList.isEmpty()) {
+			   return sqlValue = sqlList.get(0);
+			} else {
+				throw new SqlNotFoundException(key);
+			}
 		}
 		catch(EmptyResultDataAccessException e) {
 			throw new SqlNotFoundException(key + "에 해당하는 SQL을 찾을 수 없습니다", e);
