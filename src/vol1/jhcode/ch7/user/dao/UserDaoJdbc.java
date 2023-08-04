@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import vol1.jhcode.ch7.user.domain.Level;
 import vol1.jhcode.ch7.user.domain.User;
-import vol1.jhcode.ch7.user.slqservice.SqlService;
+import vol1.jhcode.ch7.user.sqlservice.SqlService;
 
 public class UserDaoJdbc implements UserDao {
 	

@@ -6,4 +6,4 @@
 //
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://www.epril.com/sqlmap", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package vol1.jhcode.ch7.user.slqservice.jaxb;
+package vol1.jhcode.ch7.user.sqlservice.jaxb;

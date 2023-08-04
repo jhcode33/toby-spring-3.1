@@ -1,4 +1,4 @@
-package vol1.jhcode.ch7.user.slqservice.exception;
+package vol1.jhcode.ch7.user.sqlservice.exception;
 
 public class SqlUpdateFailureException extends RuntimeException {
 	public SqlUpdateFailureException() {

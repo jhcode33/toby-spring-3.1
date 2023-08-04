@@ -1,4 +1,4 @@
-package vol1.jhcode.ch7.user.slqservice;
+package vol1.jhcode.ch7.user.sqlservice;
 
 import java.io.InputStream;
 
@@ -7,8 +7,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import vol1.jhcode.ch7.user.dao.UserDao;
-import vol1.jhcode.ch7.user.slqservice.jaxb.SqlType;
-import vol1.jhcode.ch7.user.slqservice.jaxb.Sqlmap;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.SqlType;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.Sqlmap;
 
 public class JaxbXmlSqlReader implements SqlReader {
 	//== SqlReader 구현부를 분리 ==//

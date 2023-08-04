@@ -1,4 +1,4 @@
-package vol1.jhcode.ch7.user.slqservice;
+package vol1.jhcode.ch7.user.sqlservice;
 
 public interface SqlReader {
 	

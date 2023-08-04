@@ -28,6 +28,11 @@
         <artifactId>spring-context</artifactId>
         <version>5.3.20</version>
     </dependency>
+    <dependency>
+	 	<groupId>org.springframework</groupId>
+	 	<artifactId>spring-context-support</artifactId>
+	 	<version>5.3.20</version>
+	</dependency>
    
 	<dependency>
         <groupId>org.springframework</groupId>
@@ -39,7 +44,7 @@
 	<dependency>
 	    <groupId>org.springframework</groupId>
 	    <artifactId>spring-jdbc</artifactId>
-	    <version>5.3.24</version>
+	    <version>5.3.20</version>
 	</dependency>
 	
 	<!-- Spring test, JUnit과 함께 사용하기 위해 선언 -->
@@ -55,9 +60,9 @@
 	<dependency>
 	    <groupId>org.junit.jupiter</groupId>
 	    <artifactId>junit-jupiter</artifactId>
-	    <version>5.5.0</version>
+	    <version>5.9.2</version>
 	    <!-- <scope>test</scope> -->
-	</dependency>	
+	</dependency>
 	
 	<!-- Java Mail -->
 	<dependency>
@@ -109,6 +114,12 @@
 	    <artifactId>spring-tx</artifactId>
 	    <version>5.3.20</version>
 	</dependency>
+	
+	<dependency>
+    	<groupId>org.aspectj</groupId>
+    	<artifactId>aspectjweaver</artifactId>
+    	<version>1.9.8</version> 
+  	</dependency>
 	
 	<!-- 내장형 DB, h2 -->
 	<dependency>

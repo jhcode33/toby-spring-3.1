@@ -1,4 +1,4 @@
-package vol1.kitec.ch7.study5_3.springframe.sqlservice.updatable;
+package vol1.jhcode.ch7.user.sqlservice.updatable;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
@@ -11,17 +11,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
-import vol1.kitec.ch7.study5_3.springframe.sqlservice.SqlUpdateFailureException;
-import vol1.kitec.ch7.study5_3.springframe.sqlservice.UpdatableSqlRegistry;
+import vol1.jhcode.ch7.user.sqlservice.UpdatableSqlRegistry;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlUpdateFailureException;
 
 public class EmbeddedDbSqlRegistryTest extends AbstractUpdatableSqlRegistryTest {
-	EmbeddedDatabase db;
+
+EmbeddedDatabase db;
 	
 	@Override
 	protected UpdatableSqlRegistry createUpdatableSqlRegistry() {
 		db = new EmbeddedDatabaseBuilder()
 			.setType(H2)
-			.addScript("classpath:vol1/kitec/ch7/study5_3/springframe/sqlservice/updatable/sqlRegistrySchema.sql")
+			.addScript("classpath:vol1/jhcode/ch7/user/sqlservice/updatable/sqlRegistrySchema.sql")
 			.build();
 		
 		EmbeddedDbSqlRegistry embeddedDbSqlRegistry = new EmbeddedDbSqlRegistry();

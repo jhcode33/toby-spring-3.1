@@ -11,8 +11,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.jupiter.api.Test;
 
-import vol1.jhcode.ch7.user.slqservice.jaxb.SqlType;
-import vol1.jhcode.ch7.user.slqservice.jaxb.Sqlmap;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.SqlType;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.Sqlmap;
 
 public class JaxbTest {
 	

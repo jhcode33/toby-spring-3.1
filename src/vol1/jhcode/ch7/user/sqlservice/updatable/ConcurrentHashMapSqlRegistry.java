@@ -1,11 +1,11 @@
-package vol1.jhcode.ch7.user.slqservice.updatable;
+package vol1.jhcode.ch7.user.sqlservice.updatable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import vol1.jhcode.ch7.user.slqservice.UpdatableSqlRegistry;
-import vol1.jhcode.ch7.user.slqservice.exception.SqlNotFoundException;
-import vol1.jhcode.ch7.user.slqservice.exception.SqlUpdateFailureException;
+import vol1.jhcode.ch7.user.sqlservice.UpdatableSqlRegistry;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlNotFoundException;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlUpdateFailureException;
 
 public class ConcurrentHashMapSqlRegistry implements UpdatableSqlRegistry {
 	

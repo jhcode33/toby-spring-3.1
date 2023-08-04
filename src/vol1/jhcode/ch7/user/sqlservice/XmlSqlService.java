@@ -1,4 +1,4 @@
-package vol1.jhcode.ch7.user.slqservice;
+package vol1.jhcode.ch7.user.sqlservice;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -10,10 +10,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import vol1.jhcode.ch7.user.dao.UserDao;
-import vol1.jhcode.ch7.user.slqservice.exception.SqlNotFoundException;
-import vol1.jhcode.ch7.user.slqservice.exception.SqlRetrievalFailureException;
-import vol1.jhcode.ch7.user.slqservice.jaxb.SqlType;
-import vol1.jhcode.ch7.user.slqservice.jaxb.Sqlmap;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlNotFoundException;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlRetrievalFailureException;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.SqlType;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.Sqlmap;
 
 public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
 	//== SqlService 구현부 ==//

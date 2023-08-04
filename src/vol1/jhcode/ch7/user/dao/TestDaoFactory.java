@@ -8,8 +8,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import vol1.jhcode.ch7.user.slqservice.OxmSqlService;
-import vol1.jhcode.ch7.user.slqservice.updatable.ConcurrentHashMapSqlRegistry;
+import vol1.jhcode.ch7.user.sqlservice.OxmSqlService;
+import vol1.jhcode.ch7.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry;
 
 @Configuration
 public class TestDaoFactory {

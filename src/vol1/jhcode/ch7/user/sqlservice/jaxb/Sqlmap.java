@@ -1,4 +1,4 @@
-package vol1.jhcode.ch7.user.slqservice.jaxb;
+package vol1.jhcode.ch7.user.sqlservice.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

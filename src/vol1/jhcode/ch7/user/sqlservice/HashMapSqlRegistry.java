@@ -1,9 +1,9 @@
-package vol1.jhcode.ch7.user.slqservice;
+package vol1.jhcode.ch7.user.sqlservice;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import vol1.jhcode.ch7.user.slqservice.exception.SqlNotFoundException;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlNotFoundException;
 import vol1.kitec.ch7.study2_6.springframe.sqlservice.SqlRetrievalFailureException;
 
 public class HashMapSqlRegistry implements SqlRegistry {

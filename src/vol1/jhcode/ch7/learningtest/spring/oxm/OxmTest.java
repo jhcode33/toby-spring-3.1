@@ -17,8 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import vol1.jhcode.ch7.user.dao.TestDaoFactory;
-import vol1.jhcode.ch7.user.slqservice.jaxb.SqlType;
-import vol1.jhcode.ch7.user.slqservice.jaxb.Sqlmap;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.SqlType;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.Sqlmap;
 
 
 @ExtendWith(SpringExtension.class)

@@ -1,4 +1,4 @@
-package vol1.jhcode.ch7.user.slqservice;
+package vol1.jhcode.ch7.user.sqlservice;
 
 public class DefaultSqlService extends BaseSqlService {
 	// 생성자를 통해서 디폴트로 사용할 객체를 생성하고 의존관계를 설정한다

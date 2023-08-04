@@ -1,4 +1,4 @@
-package vol1.jhcode.ch7.user.slqservice;
+package vol1.jhcode.ch7.user.sqlservice;
 
 import java.io.IOException;
 
@@ -11,9 +11,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 
 import vol1.jhcode.ch7.user.dao.UserDao;
-import vol1.jhcode.ch7.user.slqservice.exception.SqlRetrievalFailureException;
-import vol1.jhcode.ch7.user.slqservice.jaxb.SqlType;
-import vol1.jhcode.ch7.user.slqservice.jaxb.Sqlmap;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlRetrievalFailureException;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.SqlType;
+import vol1.jhcode.ch7.user.sqlservice.jaxb.Sqlmap;
 
 public class OxmSqlService implements SqlService {
 	// SqlService 로직을 위임할 객체

@@ -1,8 +1,8 @@
-package vol1.jhcode.ch7.user.slqservice;
+package vol1.jhcode.ch7.user.sqlservice;
 
 import java.util.Map;
 
-import vol1.jhcode.ch7.user.slqservice.exception.SqlRetrievalFailureException;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlRetrievalFailureException;
 
 public class SimpleSqlService implements SqlService {
 	
