@@ -45,13 +45,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import vol1.jhcode.ch7.TestApplicationContext;
+import vol1.jhcode.ch7.AppContext;
 import vol1.jhcode.ch7.user.dao.UserDao;
 import vol1.jhcode.ch7.user.domain.Level;
 import vol1.jhcode.ch7.user.domain.User;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestApplicationContext.class})
+@ContextConfiguration(classes = {AppContext.class})
 public class UserServiceTest {
 	
 	@Autowired UserDao userDao;

@@ -30,7 +30,7 @@ import vol1.jhcode.ch7.user.sqlservice.updatable.EmbeddedDbSqlRegistry;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "vol1.jhcode.ch7.user")
-public class TestApplicationContext {
+public class AppContext {
 	/**
 	 * DB연결과 트랜잭션
 	 */
