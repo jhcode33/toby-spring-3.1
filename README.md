@@ -1,5 +1,5 @@
-### _✍️toby_spring3.1 study Repository✍️_
-=======================================
+ _✍️toby_spring3.1 study Repository✍️_
+====================================
 <br/>
 
 토비의 스프링 3.1 책을 따라가며 Spring Framework에 대해 학습했습니다.
@@ -15,6 +15,7 @@ Maven 환경으로 변경하였고, 2023년 시점에 맞는 환경을 구성하
 
 -  **블로그** : [jhcode33의 기술블로그](https://jhcode33.tistory.com/2)
 <br/><br/>
+
 
 <hr/>
 
