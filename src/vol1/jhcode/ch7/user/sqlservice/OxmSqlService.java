@@ -57,7 +57,7 @@ public class OxmSqlService implements SqlService {
 	//== 내부 클래스 ==//
 	private class OxmSqlReader implements SqlReader{
 		private Unmarshaller unmarshaller;
-		private Resource sqlmap = new ClassPathResource("sqlmap.xml", UserDao.class);
+		private Resource sqlmap = new ClassPathResource("/sqlmap.xml");
 		
 		public void setUnmarshaller(Unmarshaller unmarshaller) {
 			this.unmarshaller = unmarshaller;

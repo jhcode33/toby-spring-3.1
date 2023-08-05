@@ -2,6 +2,7 @@ package vol1.jhcode.ch7;
 
 import javax.sql.DataSource;
 
+import org.mariadb.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,6 +11,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -17,8 +20,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.mysql.cj.jdbc.Driver;
-
+import vol1.jhcode.ch7.user.dao.UserDao;
 import vol1.jhcode.ch7.user.service.DummyMailSender;
 import vol1.jhcode.ch7.user.service.UserService;
 import vol1.jhcode.ch7.user.service.UserServiceTest.TestUserService;
@@ -28,7 +30,7 @@ import vol1.jhcode.ch7.user.service.UserServiceTest.TestUserService;
 @ComponentScan(basePackages = "vol1.jhcode.ch7.user")
 @Import(SqlServiceContext.class)
 @PropertySource("classpath:/vol1/jhcode/ch7/database.properties")
-public class AppContext {
+public class AppContext implements SqlMapConfig {
 	@Value("${db.driverClass}") Class<? extends Driver> driverClass;
 	@Value("${db.url}") String url;
 	@Value("${db.username}") String username;
@@ -37,6 +39,11 @@ public class AppContext {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
+	@Override
+	public Resource getSqlMapResource() {
+		return new ClassPathResource("sqlmap.xml", UserDao.class);
 	}
 	
 	@Bean
