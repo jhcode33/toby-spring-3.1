@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import vol1.jhcode.ch7.user.sqlservice.exception.SqlNotFoundException;
-import vol1.kitec.ch7.study2_6.springframe.sqlservice.SqlRetrievalFailureException;
+import vol1.jhcode.ch7.user.sqlservice.exception.SqlRetrievalFailureException;
 
 public class HashMapSqlRegistry implements SqlRegistry {
 	//== SqlRegistry 구현부를 분리 ==//

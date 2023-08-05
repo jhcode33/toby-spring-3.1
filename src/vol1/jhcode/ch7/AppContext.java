@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -28,7 +27,7 @@ import vol1.jhcode.ch7.user.service.UserServiceTest.TestUserService;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "vol1.jhcode.ch7.user")
-@Import(SqlServiceContext.class)
+@EnableSqlService
 @PropertySource("classpath:/vol1/jhcode/ch7/database.properties")
 public class AppContext implements SqlMapConfig {
 	@Value("${db.driverClass}") Class<? extends Driver> driverClass;

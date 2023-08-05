@@ -1,2 +1,0 @@
-<!-- xjc -p 파일명 -d src 명령어를 통해서 만들 변환할 스키마 파일  -->
-<!-- xjc가 Marshalling, unmarshalling에 필요한 jaxb 패키지 안에 클래스들을 만들어준다. -->
