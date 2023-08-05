@@ -8,8 +8,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static vol1.jhcode.ch6.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static vol1.jhcode.ch6.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
+import static vol1.jhcode.ch7.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static vol1.jhcode.ch7.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -27,12 +27,14 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -40,23 +42,24 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import vol1.jhcode.ch6.user.dao.UserDao;
-import vol1.jhcode.ch6.user.domain.Level;
-import vol1.jhcode.ch6.user.domain.User;
-import vol1.jhcode.ch7.user.service.TestUserServiceImpl.TestUserServiceException;
+import vol1.jhcode.ch7.TestApplicationContext;
+import vol1.jhcode.ch7.user.dao.UserDao;
+import vol1.jhcode.ch7.user.domain.Level;
+import vol1.jhcode.ch7.user.domain.User;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestServiceFactory.class})
+@ContextConfiguration(classes = {TestApplicationContext.class})
 public class UserServiceTest {
 	
-	@Autowired private UserDao userDao;
-	@Autowired private UserService userService;
-	@Autowired @Qualifier("testUserService") 
-	private UserService testUserService;
-	
-	@Autowired private PlatformTransactionManager transactionManager;
-	@Autowired private MailSender mailSender;
+	@Autowired UserDao userDao;
+	@Autowired UserService userService;
+	@Autowired UserService testUserService;
+	@Autowired PlatformTransactionManager transactionManager;
+	@Autowired MailSender mailSender;
+	@Autowired ApplicationContext context;
 	
 	List<User> users;
 	
@@ -258,6 +261,20 @@ public class UserServiceTest {
 		}
 	}
 	
+	@Test//(expected=TransientDataAccessResourceException.class) 
+	public void readOnlyTransactionAttribute() {
+		Assertions.assertThrows(TransientDataAccessResourceException.class, 
+				() -> {testUserService.getAll();});		
+	}
+	
+	@Test
+	@Transactional(propagation=Propagation.NEVER)
+	public void transactionSync() {
+		userService.deleteAll();
+		userService.add(users.get(0));
+		userService.add(users.get(1));
+	}
+	
 	@Test
 	public void advisorAutoProxyCreator() {
 		//주입받는 객체가 proxy 객체인지 검증
@@ -308,5 +325,24 @@ public class UserServiceTest {
 			System.out.println("Failed to send email. Error message: " + e.getMessage());
 			fail("This sendEmailToFmail test is failed!!");
 		}
+	}
+	
+	public static class TestUserService extends UserServiceImpl {
+		private String id = "user4"; // users(3).getId()
+		
+		protected void upgradeLevel(User user) {
+			if (user.getId().equals(this.id)) throw new TestUserServiceException();  
+			super.upgradeLevel(user);  
+		}
+		
+		public List<User> getAll() {
+			for(User user : super.getAll()) {
+				super.update(user);
+			}
+			return null;
+		}
+	}
+	
+	static class TestUserServiceException extends RuntimeException {
 	}
 }

@@ -1,6 +1,8 @@
 package vol1.jhcode.ch7.user.service;
 
-import vol1.jhcode.ch6.user.domain.User;
+import java.util.List;
+
+import vol1.jhcode.ch7.user.domain.User;
 
 public class TestUserServiceImpl extends UserServiceImpl {
 	
@@ -11,9 +13,16 @@ public class TestUserServiceImpl extends UserServiceImpl {
 
 	@Override
 	protected void upgradeLevel(User user) {
-		
 		//테스트에서 생성자로 주입한 ID와 User 객체의 아이디가 같으면 오류를 발생시킨다.
 		if (user.getId().equals(this.id)) throw new TestUserServiceException();
 		super.upgradeLevel(user);
+	}
+	
+	@Override
+	public List<User> getAll() {
+		for(User user : super.getAll()) {
+			super.update(user);
+		}
+		return null;
 	}
 }

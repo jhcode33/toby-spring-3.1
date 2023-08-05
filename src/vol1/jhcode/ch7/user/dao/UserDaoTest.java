@@ -21,12 +21,12 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import vol1.jhcode.ch7.TestApplicationContext;
 import vol1.jhcode.ch7.user.domain.Level;
 import vol1.jhcode.ch7.user.domain.User;
 
-
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestDaoFactory.class})
+@ContextConfiguration(classes = {TestApplicationContext.class})
 public class UserDaoTest {	
 	 
 	@Autowired UserDao dao; 

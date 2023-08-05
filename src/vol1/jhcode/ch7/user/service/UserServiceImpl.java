@@ -1,25 +1,25 @@
 package vol1.jhcode.ch7.user.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.stereotype.Service;
 
-import vol1.jhcode.ch6.user.dao.UserDao;
-import vol1.jhcode.ch6.user.domain.Level;
-import vol1.jhcode.ch6.user.domain.User;
+import vol1.jhcode.ch7.user.dao.UserDao;
+import vol1.jhcode.ch7.user.domain.Level;
+import vol1.jhcode.ch7.user.domain.User;
 
-
+@Service("userService")
 public class UserServiceImpl implements UserService {
 	
 	public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
 	public static final int MIN_RECCOMEND_FOR_GOLD = 30;
 	
-    private UserDao userDao;
-	private MailSender mailSender;
+    @Autowired private UserDao userDao;
+    @Autowired private MailSender mailSender;
 	
 	//UserDao 주입
 	public void setUserDao(UserDao userDao) {
@@ -76,4 +76,11 @@ public class UserServiceImpl implements UserService {
 			
 		this.mailSender.send(mailMessage);
 	}	
+	
+	public void deleteAll() { 	userDao.deleteAll(); }
+	public Optional<User> get(String id) { 
+		return userDao.get(id); 
+	}
+	public List<User> getAll() { return userDao.getAll(); }
+	public void update(User user) { userDao.update(user); }
 }

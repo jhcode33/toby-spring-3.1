@@ -8,22 +8,26 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import vol1.jhcode.ch7.user.domain.Level;
 import vol1.jhcode.ch7.user.domain.User;
 import vol1.jhcode.ch7.user.sqlservice.SqlService;
 
+@Component("userDao")
 public class UserDaoJdbc implements UserDao {
 	
 	private JdbcTemplate jdbcTemplate;
 	
-	// SqlService 타입으로 주입
+	@Autowired
 	private SqlService sqlService;
 	
+	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}

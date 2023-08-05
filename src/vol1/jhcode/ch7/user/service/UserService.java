@@ -1,11 +1,25 @@
 package vol1.jhcode.ch7.user.service;
 
-import vol1.jhcode.ch6.user.domain.User;
+import java.util.List;
+import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import vol1.jhcode.ch7.user.domain.User;
+
+@Service
+@Transactional
 public interface UserService {
-	
-	// 트랜잭션과 비즈니스 로직을 분리하기 위한 인터페이스
 	void add(User user);
+	void deleteAll();
+	void update(User user);
+	
+	@Transactional(readOnly=true)
+	Optional<User> get(String id);
+	
+	@Transactional(readOnly=true)
+	List<User> getAll();
+	
 	void upgradeLevels();
-
 }
